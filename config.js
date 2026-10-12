@@ -3,11 +3,11 @@
 // (index.html no necesitas tocarlo.)
 
 // Enlace CSV de la pestaña "Publico" (Archivo > Compartir > Publicar en la web > CSV)
-const CSV_URL = "PEGA_AQUI_EL_ENLACE_CSV";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTwWu0HjWZL_Y6dK0eJceDsj19NXJ6dITplf5xPLezKVzSRs1vmkRRgRZ3BscZ6lMPKqAjvY5_VQ7M/pub?gid=643863470&single=true&output=csv";
 
-const WHATSAPP = "51999999999";                          // tu número con código de país, sin +
-const FACEBOOK_URL = "https://www.facebook.com/";        // enlace de tu página de Facebook
-const CANAL_WSP_URL = "https://whatsapp.com/channel/";   // enlace de tu canal de WhatsApp
+const WHATSAPP = "51965253469";                          // tu número con código de país, sin +
+const FACEBOOK_URL = "https://www.facebook.com/1SorteoYa";        // enlace de tu página de Facebook
+const CANAL_WSP_URL = "https://whatsapp.com/channel/0029VbDEnNL0G0Xlb7Ehzt27";   // enlace de tu canal de WhatsApp
 
 // Pagos: sube las imágenes de tus QR junto a index.html con estos nombres
 const PAGO = {

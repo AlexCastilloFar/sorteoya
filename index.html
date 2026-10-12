@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SorteoYa – Sorteos, tickets y ganadores</title>
+<link rel="icon" href="logo.png">
+<style>
+:root{--navy:#010f39;--navy2:#0b1f66;--gold:#fdba0a;--gold2:#ff9d00;--bg:#f3f5fb;--txt:#0d1330;--mut:#667091;--ok:#12b76a;--bad:#e5484d}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.4}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1000px;margin:auto;padding:0 16px}
+/* Header */
+header{position:sticky;top:0;z-index:20;background:var(--navy);box-shadow:0 2px 12px #0006}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;max-width:1000px;margin:auto}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800}
+.brand img{width:42px;height:42px;border-radius:10px}
+nav{display:flex;gap:4px;background:#ffffff14;padding:4px;border-radius:99px}
+nav a{color:#fff;padding:8px 14px;border-radius:99px;font-size:.9rem;font-weight:600;white-space:nowrap}
+nav a:hover,nav a.on{background:var(--gold);color:var(--navy)}
+.wsp{background:var(--gold)!important;color:var(--navy)!important}
+@media(max-width:640px){.brand span{display:none}nav a{padding:7px 10px;font-size:.8rem}}
+/* Hero */
+.hero{background:radial-gradient(circle at 70% 0,var(--navy2),var(--navy) 70%);color:#fff;text-align:center;padding:36px 16px 56px}
+.hero h1{font-size:clamp(1.8rem,6vw,3rem);font-weight:900}
+.hero h1 b{color:var(--gold)}
+.hero p{opacity:.85;margin-top:8px}
+section{padding:36px 0}
+.eyebrow{text-align:center;font-size:.72rem;letter-spacing:.2em;color:var(--mut);font-weight:700;text-transform:uppercase}
+h2{text-align:center;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;margin:4px 0 22px}
+h2 b{color:var(--navy2);background:linear-gradient(90deg,var(--gold2),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* Cards de sorteo */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:-34px}
+.card{background:#fff;border-radius:22px;padding:16px;box-shadow:0 8px 30px #0b1f6622}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ch h3{font-size:1.2rem;font-weight:800}
+.price{background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:14px;padding:6px 12px;text-align:center;color:var(--navy);line-height:1}
+.price small{display:block;font-size:.55rem;font-weight:800;letter-spacing:.08em}
+.price b{font-size:1.7rem;font-weight:900}
+.prize{margin:14px 0;border-radius:18px;min-height:190px;background:radial-gradient(circle at 50% 0,#2b4bd6,var(--navy) 75%);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:16px;color:#fff;text-align:center;position:relative;overflow:hidden;background-size:cover;background-position:center}
+.prize .tag{position:absolute;top:10px;left:10px;background:#ffffff26;padding:4px 10px;border-radius:99px;font-size:.7rem;font-weight:800;color:var(--gold)}
+.prize .ico{font-size:3.4rem}
+.prize strong{font-size:1.3rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.chip{background:#fdba0a22;color:#8a5a00;font-weight:700;font-size:.8rem;padding:5px 10px;border-radius:99px}
+.cd{display:flex;justify-content:center;gap:6px;margin:6px 0 10px}
+.cd div{background:var(--navy);color:#fff;border-radius:10px;padding:6px 0;width:54px;text-align:center}
+.cd b{display:block;font-size:1.3rem}.cd small{font-size:.55rem;opacity:.7;letter-spacing:.1em}
+.lbl{text-align:center;font-size:.7rem;letter-spacing:.15em;color:var(--mut);font-weight:700}
+.prog{height:10px;background:#e4e8f5;border-radius:99px;overflow:hidden;margin:12px 0 4px}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.pt{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mut);margin-bottom:12px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:0;border-radius:14px;font-weight:800;font-size:1rem;cursor:pointer;background:linear-gradient(90deg,var(--gold),var(--gold2));color:var(--navy)}
+.btn.alt{background:var(--navy);color:#fff;margin-top:8px}
+/* Números */
+.panel{background:#fff;border-radius:22px;padding:18px;box-shadow:0 8px 30px #0b1f6614}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{border:2px solid var(--navy);background:#fff;color:var(--navy);padding:8px 14px;border-radius:99px;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--navy);color:var(--gold)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--mut);margin-bottom:12px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:7px}
+.n{padding:11px 0;text-align:center;border-radius:10px;font-weight:800;border:2px solid transparent;user-select:none}
+.libre{background:#12b76a1c;color:#067647;border-color:#12b76a55;cursor:pointer}
+.libre:hover{background:var(--ok);color:#fff}
+.ocupado{background:#e5484d18;color:var(--bad);text-decoration:line-through;cursor:not-allowed;opacity:.8}
+.match{background:var(--gold)!important;color:var(--navy)!important;border-color:var(--navy);text-decoration:none;opacity:1}
+.hint{font-size:.8rem;color:var(--mut);margin-top:10px}
+/* Buscador */
+input{width:100%;padding:14px;font-size:1rem;border:2px solid #d5dbef;border-radius:14px;background:#fff;color:var(--txt)}
+input:focus{outline:0;border-color:var(--gold2)}
+.res>div{padding:12px 0;border-bottom:1px solid #e4e8f5}
+.badge{display:inline-block;background:var(--navy);color:var(--gold);font-weight:800;border-radius:8px;padding:3px 10px;margin:3px 3px 0 0}
+.mut{color:var(--mut)}
+/* Pasos */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.step{border-radius:18px;padding:18px;color:#fff;min-height:150px}
+.step b{font-size:2.2rem;font-weight:900;display:block}
+.step h4{margin:4px 0}.step p{font-size:.85rem;opacity:.9}
+.s1{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy)}
+.s2{background:var(--navy2)}.s3{background:#2b4bd6}.s4{background:#fff;color:var(--navy);box-shadow:0 0 0 2px var(--gold) inset}.s5{background:var(--navy)}
+/* Pago */
+.pay{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:22px;padding:22px;text-align:center}
+.pay .num{font-size:2rem;font-weight:900;color:var(--gold);margin:6px 0}
+.pay button{margin-top:10px;padding:10px 18px;border:0;border-radius:12px;font-weight:800;cursor:pointer;background:var(--gold);color:var(--navy)}
+/* Ganadores */
+.gal{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.gal figure{flex:0 0 min(280px,80%);scroll-snap-align:start;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px #0b1f6620}
+.gal img{width:100%;height:200px;object-fit:cover;display:block}
+.gal figcaption{padding:10px;font-weight:700;font-size:.9rem}
+.ganador{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;border-left:5px solid var(--gold);font-weight:600}
+footer{background:var(--navy);color:#ffffffb0;text-align:center;padding:26px 16px;font-size:.85rem}
+footer img{width:60px;border-radius:12px;margin-bottom:6px}
+.fab{position:fixed;right:16px;bottom:16px;z-index:30;background:#25d366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 4px 16px #0006}
+.prize.img{background:#fff;color:var(--navy);justify-content:center;border:1px solid #e4e8f5}
+.prize.img .tag{background:var(--navy);color:var(--gold)}
+.prize.img img{max-width:100%;height:170px;object-fit:contain}
+.minis{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px}
+.mini{flex:0 0 96px;text-align:center;font-size:.72rem;font-weight:700;background:#f3f5fb;border-radius:12px;padding:6px}
+.mini img{width:100%;height:70px;object-fit:contain;background:#fff;border-radius:8px}
+.live{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.live a{display:block;border-radius:18px;padding:18px;color:#fff;font-weight:800}
+.live small{display:block;font-weight:600;opacity:.9;margin-top:2px}
+.fb{background:linear-gradient(135deg,#1877f2,#0b4fb5)}.wc{background:linear-gradient(135deg,#25d366,#128c7e)}
+.aviso{border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:.88rem;text-align:center;background:#fdba0a1f;color:#7a4e00;font-weight:600}
+.aviso.full{background:var(--navy);color:#fff}.aviso.full b{color:var(--gold)}
+</style>
+</head>
+<body>
+<header><div class="bar">
+  <a class="brand" href="#sorteos"><img src="logo.png" alt="SorteoYa"><span>SorteoYa</span></a>
+  <nav>
+    <a href="#sorteos" class="on">Sorteos</a><a href="#numeros">Números</a><a href="#tickets">Mis tickets</a><a href="#ganadores">Ganadores</a><a id="soporte" class="wsp" target="_blank" rel="noopener">Soporte</a>
+  </nav>
+</div></header>
+
+<div class="hero">
+  <h1>Participa y <b>gana ya</b></h1>
+  <p>Sorteos en vivo por nuestra página de Facebook · Mira tus números en tiempo real</p>
+</div>
+
+<main class="wrap">
+  <section id="sorteos" style="padding-top:0">
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="envivo" style="padding-bottom:0">
+    <div class="eyebrow">Transparencia total</div><h2>Sorteos en <b>vivo</b></h2>
+    <div class="live">
+      <a class="fb" id="lnkFb" target="_blank" rel="noopener">📺 Facebook de SorteoYa<small>Todos nuestros sorteos se realizan únicamente por nuestra página de Facebook</small></a>
+      <a class="wc" id="lnkCanal" target="_blank" rel="noopener">💬 Canal de WhatsApp<small>Avisos de sorteos, resultados y novedades directo a tu celular</small></a>
+    </div>
+  </section>
+
+  <section id="numeros">
+    <div class="eyebrow">Elige tu suerte</div><h2>Mira los <b>números</b></h2>
+    <div class="panel">
+      <div class="tabs" id="tabs"></div>
+      <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>Libre</span><span><i class="dot" style="background:var(--bad)"></i>Ocupado</span><span><i class="dot" style="background:var(--gold)"></i>Tus números</span><span id="resumen"></span></div>
+      <div class="grid" id="grid"></div>
+      <p class="hint">Toca un número libre para pedirlo por WhatsApp. Se actualiza solo cada minuto.</p>
+    </div>
+  </section>
+
+  <section id="tickets">
+    <div class="eyebrow">Consulta rápida</div><h2>Mis <b>tickets</b></h2>
+    <div class="panel">
+      <input id="q" placeholder="Escribe tu nombre (ej: Alex Castillo)" autocomplete="off">
+      <div class="res" id="res"></div>
+    </div>
+  </section>
+
+  <section id="pago">
+    <div class="eyebrow">Método de pago</div><h2>Paga en <b>segundos</b></h2>
+    <div class="pay">
+      <div>Yapea o transfiere a</div>
+      <div class="num" id="yNum"></div>
+      <div id="yNom"></div>
+      <button id="copiar">Copiar número</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Así de fácil</div><h2>Cómo <b>participo</b></h2>
+    <div class="steps">
+      <div class="step s1"><b>01</b><h4>Elige tu número</h4><p>Revisa los libres en la cuadrícula.</p></div>
+      <div class="step s2"><b>02</b><h4>Escríbenos</h4><p>Toca el número y te abre WhatsApp.</p></div>
+      <div class="step s3"><b>03</b><h4>Paga</h4><p>Por Yape o transferencia.</p></div>
+      <div class="step s4"><b>04</b><h4>Envía tu comprobante</h4><p>Y aparecerás en "Mis tickets".</p></div>
+      <div class="step s5"><b>05</b><h4>¡A esperar!</h4><p>Mucha suerte el día del sorteo.</p></div>
+    </div>
+  </section>
+
+  <section id="ganadores">
+    <div class="eyebrow">Ellos ya ganaron</div><h2>Salón de la <b>fama</b></h2>
+    <div id="ganadores-lista"></div>
+    <div class="gal" id="gal"></div>
+  </section>
+</main>
+
+<footer>
+  <img src="logo.png" alt="SorteoYa"><br>
+  © 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.
+</footer>
+<a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+
+<script>
+/* ================= CONFIGURA SOLO ESTO ================= */
+const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTwWu0HjWZL_Y6dK0eJceDsj19NXJ6dITplf5xPLezKVzSRs1vmkRRgRZ3BscZ6lMPKqAjvY5_VQ7M/pub?gid=643863470&single=true&output=csv";   // pestaña "Publico" publicada como CSV
+const WHATSAPP = "51965253469";               // tu número con código de país, sin +
+const FACEBOOK_URL = "https://www.facebook.com/1SorteoYa";      // enlace de tu página de Facebook
+const CANAL_WSP_URL = "https://whatsapp.com/channel/0029VbDEnNL0G0Xlb7Ehzt27"; // enlace de tu canal de WhatsApp
+const PAGO = { numero: "965 253 469", nombre: "Alex Castillo" };
+
+// "clave" = texto que aparece en el nombre de la dinámica del formulario
+// fechaSorteo: cuando se agoten los números, escribe aquí el día y la hora (ej: "Sábado 2 de noviembre · 8:00 p.m. por Facebook").
+// Mientras esté vacío, la página dice que pronto avisarás la fecha.
+const SORTEOS = [
+  { clave:"electro", titulo:"Dinámica Electro", precio:12, packs:"2 por S/ 20",
+    premio:'TV JVC 43" QLED Smart TV', imagen:"tv.jpg",
+    otros:[
+      {n:"Licuadora Práctika BL-600", img:"licuadora.jpg"},
+      {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},
+      {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"}
+    ],
+    fechaSorteo:"", desde:1, hasta:130 }
+];
+
+// Ganadores: foto = nombre del archivo subido junto a index.html (ej: "ganador1.jpg")
+const GANADORES = [
+  {titulo:"Dinámica de S/ 1,100 · ¡Premios entregados!", nombre:"", foto:"ganadores-1100.jpg"},
+];
+/* ======================================================= */
+
+const $=id=>document.getElementById(id);
+const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+const wa=t=>`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(t)}`;
+let filas=[], actual=0;
+
+function parseCSV(t){const o=[];let r=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+  else if(ch=='"')q=true;else if(ch==','){r.push(c);c=""}
+  else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);o.push(r);r=[];c=""}else c+=ch}
+  if(c||r.length){r.push(c);o.push(r)}return o}
+
+const filasDe=s=>filas.filter(f=>norm(f.dina).includes(norm(s.clave)));
+function ocupados(s){const m=new Map();filasDe(s).forEach(f=>f.nums.forEach(n=>m.set(n,f.nombre)));return m}
+const pad=(n,s)=>String(n).padStart(2,"0");
+
+async function cargar(){
+  try{
+    const r=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"t="+Date.now());
+    filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[]}));
+  }catch(e){}
+  pintarCards();pintarGrid();buscar();
+}
+
+function pintarCards(){
+  $("cards").innerHTML=SORTEOS.map((s,i)=>{
+    const oc=ocupados(s).size,total=s.hasta-s.desde+1,pct=Math.round(oc/total*100);
+    return `<div class="card">
+      <div class="ch"><h3>${s.titulo}</h3><div class="price"><small>S/</small><b>${s.precio}</b><small>POR NÚMERO</small></div></div>
+      <div class="prize img"><span class="tag">🏆 PREMIO</span><img src="${s.imagen}" alt=""><strong>${s.premio}</strong></div>
+      <div class="lbl" style="text-align:left;margin-bottom:6px">+ ${s.otros.length} PREMIOS MÁS · SE SORTEAN POR SEPARADO</div>
+      <div class="minis">${s.otros.map(o=>`<div class="mini"><img src="${o.img}" alt="">${o.n}</div>`).join("")}</div>
+      <div class="chips"><span class="chip">🎟️ 1 por S/ ${s.precio}</span><span class="chip">🎟️ ${s.packs}</span><span class="chip">Más boletos = más probabilidades</span></div>
+      ${aviso(s,total-oc)}
+      <div class="prog"><i style="width:${pct}%"></i></div>
+      <div class="pt"><span>${oc} vendidos</span><span>${total-oc} disponibles</span></div>
+      <button class="btn" onclick="irNumeros(${i})">${total-oc>0?"Ver números y participar →":"Ver números"}</button>
+    </div>`}).join("");
+  tick();
+}
+
+function aviso(s,libres){
+  if(libres>0) return `<div class="aviso">🎯 El sorteo se realiza apenas se agoten los ${s.hasta-s.desde+1} números. Te avisaremos el día y la hora por Facebook y WhatsApp.</div>`;
+  return `<div class="aviso full">🔥 <b>¡Números agotados!</b><br>${s.fechaSorteo?`Sorteo: <b>${s.fechaSorteo}</b>`:"Pronto anunciaremos el día y la hora del sorteo."}</div>`;
+}
+
+function irNumeros(i){actual=i;pintarGrid();$("numeros").scrollIntoView({behavior:"smooth"})}
+
+function pintarGrid(){
+  $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};pintarGrid()">${s.titulo}</button>`).join("");
+  const s=SORTEOS[actual],oc=ocupados(s),q=norm($("q").value);
+  let h="",o=0;
+  for(let n=s.desde;n<=s.hasta;n++){
+    const d=oc.get(n),l=pad(n,s);
+    if(d){o++;const m=q.length>=2&&norm(d).includes(q)?" match":"";h+=`<div class="n ocupado${m}" title="${d.replace(/"/g,"&quot;")}">${l}</div>`}
+    else h+=`<div class="n libre" onclick="pedir(${n})">${l}</div>`}
+  $("grid").innerHTML=h;
+  $("resumen").textContent=`${o} ocupados · ${s.hasta-s.desde+1-o} libres`;
+}
+
+function pedir(n){const s=SORTEOS[actual];window.open(wa(`Hola, quiero el número ${pad(n,s)} de la ${s.titulo}. ¿Sigue disponible?`),"_blank")}
+
+function buscar(){
+  const q=norm($("q").value),box=$("res");pintarGrid();
+  if(q.length<2){box.innerHTML="";return}
+  const hits=filas.filter(f=>norm(f.nombre).includes(q));
+  if(!hits.length){box.innerHTML='<div class="mut">No encontramos ese nombre. Revisa cómo lo escribiste o escríbenos por Soporte.</div>';return}
+  box.innerHTML="";
+  hits.forEach(f=>{const d=document.createElement("div"),b=document.createElement("b");b.textContent=f.nombre;
+    const sp=document.createElement("span");sp.className="mut";sp.textContent=" – "+f.dina;d.append(b,sp,document.createElement("br"));
+    const s=SORTEOS.find(x=>norm(f.dina).includes(norm(x.clave)))||SORTEOS[0];
+    f.nums.forEach(n=>{const t=document.createElement("span");t.className="badge";t.textContent=pad(n,s);d.appendChild(t)});box.appendChild(d)});
+}
+
+function tick(){document.querySelectorAll(".cd").forEach(el=>{
+  let ms=new Date(el.dataset.fin)-Date.now();if(ms<0)ms=0;
+  const v=[Math.floor(ms/864e5),Math.floor(ms/36e5)%24,Math.floor(ms/6e4)%60,Math.floor(ms/1e3)%60];
+  el.querySelectorAll("b").forEach((b,i)=>b.textContent=String(v[i]).padStart(2,"0"))})}
+
+function pintarGanadores(){
+  const l=$("ganadores-lista"),g=$("gal");
+  if(!GANADORES.length){l.innerHTML='<p class="mut" style="text-align:center">Pronto publicaremos a nuestros ganadores 🏆</p>';return}
+  GANADORES.forEach(x=>{
+    if(x.foto){const f=document.createElement("figure"),i=document.createElement("img"),c=document.createElement("figcaption");
+      i.src=x.foto;i.alt=x.titulo;i.loading="lazy";c.textContent=x.nombre?`${x.titulo} · ${x.nombre}`:x.titulo;f.append(i,c);g.appendChild(f)}
+    else{const d=document.createElement("div");d.className="ganador";d.textContent=`🏆 ${x.titulo} · ${x.nombre}`;l.appendChild(d)}})}
+
+$("lnkFb").href=FACEBOOK_URL;$("lnkCanal").href=CANAL_WSP_URL;$("soporte").href=wa("Hola SorteoYa, necesito ayuda.");$("fab").href=wa("Hola SorteoYa 👋");
+$("yNum").textContent=PAGO.numero;$("yNom").textContent=PAGO.nombre;
+$("copiar").onclick=e=>{navigator.clipboard?.writeText(PAGO.numero.replace(/\s/g,""));e.target.textContent="¡Copiado!";setTimeout(()=>e.target.textContent="Copiar número",1500)};
+$("q").addEventListener("input",buscar);
+pintarGanadores();pintarCards();pintarGrid();cargar();
+setInterval(cargar,60000);setInterval(tick,1000);
+</script>
+</body>
+</html>

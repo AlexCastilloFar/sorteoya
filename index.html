@@ -65,7 +65,8 @@ h2 b{color:var(--navy2);background:linear-gradient(90deg,var(--gold2),var(--gold
 .libre{background:#12b76a1c;color:#067647;border-color:#12b76a55;cursor:pointer}
 .libre:hover{background:var(--ok);color:#fff}
 .ocupado{background:#e5484d18;color:var(--bad);text-decoration:line-through;cursor:not-allowed;opacity:.8}
-.match{background:var(--gold)!important;color:var(--navy)!important;border-color:var(--navy);text-decoration:none;opacity:1}
+.match{background:#2b4bd6!important;color:#fff!important;border-color:var(--navy);text-decoration:none;opacity:1}
+.sel{background:var(--gold)!important;color:var(--navy)!important;border-color:var(--navy)!important;transform:scale(1.06)}
 .hint{font-size:.8rem;color:var(--mut);margin-top:10px}
 /* Buscador */
 input{width:100%;padding:14px;font-size:1rem;border:2px solid #d5dbef;border-radius:14px;background:#fff;color:var(--txt)}
@@ -105,6 +106,14 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .fb{background:linear-gradient(135deg,#1877f2,#0b4fb5)}.wc{background:linear-gradient(135deg,#25d366,#128c7e)}
 .aviso{border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:.88rem;text-align:center;background:#fdba0a1f;color:#7a4e00;font-weight:600}
 .aviso.full{background:var(--navy);color:#fff}.aviso.full b{color:var(--gold)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:60px;z-index:10;background:#fff;padding:8px 0;margin-bottom:6px}
+.top .tabs{margin:0}
+.buy{width:auto;padding:12px 18px;font-size:.95rem}
+.ptabs{display:inline-flex;gap:6px;background:#ffffff1f;padding:4px;border-radius:99px;margin-bottom:8px}
+.ptabs button{margin:0;border:0;background:transparent;color:#fff;padding:9px 22px;border-radius:99px;font-weight:800;cursor:pointer}
+.ptabs button.yape{background:#8a2be2}.ptabs button.plin{background:#00b8c4}
+.qr{width:210px;max-width:70%;background:#fff;padding:10px;border-radius:14px;margin:12px auto 0;display:block}
+.pay .small{font-size:.8rem;opacity:.8;margin-top:12px}
 </style>
 </head>
 <body>
@@ -136,17 +145,17 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
   <section id="numeros">
     <div class="eyebrow">Elige tu suerte</div><h2>Mira los <b>números</b></h2>
     <div class="panel">
-      <div class="tabs" id="tabs"></div>
-      <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>Libre</span><span><i class="dot" style="background:var(--bad)"></i>Ocupado</span><span><i class="dot" style="background:var(--gold)"></i>Tus números</span><span id="resumen"></span></div>
+      <div class="top"><div class="tabs" id="tabs"></div><button class="btn buy" id="buy" onclick="comprar()" style="display:none"></button></div>
+      <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>Libre</span><span><i class="dot" style="background:var(--bad)"></i>Ocupado</span><span><i class="dot" style="background:var(--gold)"></i>Seleccionado</span><span><i class="dot" style="background:#2b4bd6"></i>Tus números</span><span id="resumen"></span></div>
       <div class="grid" id="grid"></div>
-      <p class="hint">Toca un número libre para pedirlo por WhatsApp. Se actualiza solo cada minuto.</p>
+      <p class="hint">Toca los números que quieras (puedes elegir varios) y luego presiona "Compra tus boletos". Se actualiza solo cada minuto.</p>
     </div>
   </section>
 
   <section id="tickets">
     <div class="eyebrow">Consulta rápida</div><h2>Mis <b>tickets</b></h2>
     <div class="panel">
-      <input id="q" placeholder="Escribe tu nombre (ej: Alex Castillo)" autocomplete="off">
+      <input id="q" placeholder="Escribe tu nombre y apellido (ej: Alex Castillo)" autocomplete="off">
       <div class="res" id="res"></div>
     </div>
   </section>
@@ -154,10 +163,13 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
   <section id="pago">
     <div class="eyebrow">Método de pago</div><h2>Paga en <b>segundos</b></h2>
     <div class="pay">
-      <div>Yapea o transfiere a</div>
-      <div class="num" id="yNum"></div>
-      <div id="yNom"></div>
+      <div class="ptabs"><button id="tYape">Yape</button><button id="tPlin">Plin</button></div>
+      <div class="num" id="pNum"></div>
+      <div id="pNom"></div>
+      <img id="pQr" class="qr" alt="Código QR">
+      <div id="pQrMsg" class="small"></div>
       <button id="copiar">Copiar número</button>
+      <p class="small">Después de pagar, envía tu comprobante por WhatsApp.</p>
     </div>
   </section>
 
@@ -185,33 +197,9 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 </footer>
 <a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
+<script src="config.js"></script>
 <script>
-/* ================= CONFIGURA SOLO ESTO ================= */
-const CSV_URL  = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTwWu0HjWZL_Y6dK0eJceDsj19NXJ6dITplf5xPLezKVzSRs1vmkRRgRZ3BscZ6lMPKqAjvY5_VQ7M/pub?gid=643863470&single=true&output=csv";   // pestaña "Publico" publicada como CSV
-const WHATSAPP = "51965253469";               // tu número con código de país, sin +
-const FACEBOOK_URL = "https://www.facebook.com/1SorteoYa";      // enlace de tu página de Facebook
-const CANAL_WSP_URL = "https://whatsapp.com/channel/0029VbDEnNL0G0Xlb7Ehzt27"; // enlace de tu canal de WhatsApp
-const PAGO = { numero: "965 253 469", nombre: "Alex Castillo" };
 
-// "clave" = texto que aparece en el nombre de la dinámica del formulario
-// fechaSorteo: cuando se agoten los números, escribe aquí el día y la hora (ej: "Sábado 2 de noviembre · 8:00 p.m. por Facebook").
-// Mientras esté vacío, la página dice que pronto avisarás la fecha.
-const SORTEOS = [
-  { clave:"electro", titulo:"Dinámica Electro", precio:12, packs:"2 por S/ 20",
-    premio:'TV JVC 43" QLED Smart TV', imagen:"tv.jpg",
-    otros:[
-      {n:"Licuadora Práctika BL-600", img:"licuadora.jpg"},
-      {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},
-      {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"}
-    ],
-    fechaSorteo:"", desde:1, hasta:130 }
-];
-
-// Ganadores: foto = nombre del archivo subido junto a index.html (ej: "ganador1.jpg")
-const GANADORES = [
-  {titulo:"Dinámica de S/ 1,100 · ¡Premios entregados!", nombre:"", foto:"ganadores-1100.jpg"},
-];
-/* ======================================================= */
 
 const $=id=>document.getElementById(id);
 const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
@@ -260,27 +248,48 @@ function aviso(s,libres){
 
 function irNumeros(i){actual=i;pintarGrid();$("numeros").scrollIntoView({behavior:"smooth"})}
 
+let sel=new Set();
+const total=(s,n)=>s.packCant?Math.floor(n/s.packCant)*s.packPrecio+(n%s.packCant)*s.precio:n*s.precio;
+
 function pintarGrid(){
-  $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};pintarGrid()">${s.titulo}</button>`).join("");
+  $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};sel.clear();pintarGrid()">${s.titulo}</button>`).join("");
   const s=SORTEOS[actual],oc=ocupados(s),q=norm($("q").value);
+  sel.forEach(n=>{if(oc.has(n))sel.delete(n)});
   let h="",o=0;
   for(let n=s.desde;n<=s.hasta;n++){
     const d=oc.get(n),l=pad(n,s);
-    if(d){o++;const m=q.length>=2&&norm(d).includes(q)?" match":"";h+=`<div class="n ocupado${m}" title="${d.replace(/"/g,"&quot;")}">${l}</div>`}
-    else h+=`<div class="n libre" onclick="pedir(${n})">${l}</div>`}
+    if(d){o++;h+=`<div class="n ocupado${coincide(d,q)?" match":""}">${l}</div>`}
+    else h+=`<div class="n libre${sel.has(n)?" sel":""}" onclick="toggle(${n})">${l}</div>`}
   $("grid").innerHTML=h;
   $("resumen").textContent=`${o} ocupados · ${s.hasta-s.desde+1-o} libres`;
+  const b=$("buy");b.style.display=sel.size?"":"none";
+  b.textContent=`🛒 Compra tus boletos (${sel.size}) · S/ ${total(s,sel.size)}`;
 }
 
-function pedir(n){const s=SORTEOS[actual];window.open(wa(`Hola, quiero el número ${pad(n,s)} de la ${s.titulo}. ¿Sigue disponible?`),"_blank")}
+function toggle(n){sel.has(n)?sel.delete(n):sel.add(n);pintarGrid()}
+
+function comprar(){
+  const s=SORTEOS[actual],l=[...sel].sort((a,b)=>a-b).map(n=>pad(n,s));
+  if(!l.length)return;
+  window.open(wa(`Hola, quiero comprar ${l.length>1?"los números":"el número"} ${l.join(", ")} de la ${s.titulo}. Total: S/ ${total(s,l.length)}. ¿Siguen disponibles?`),"_blank");
+}
+
+// Solo coincide con nombre + apellido completos (mín. 3 letras cada uno)
+function tokens(q){return q.split(/\s+/).filter(Boolean)}
+function coincide(nombre,q){
+  const qt=tokens(q);if(qt.length<2||qt.some(t=>t.length<3))return false;
+  const nt=tokens(norm(nombre));return qt.every(t=>nt.some(w=>w.startsWith(t)));
+}
 
 function buscar(){
-  const q=norm($("q").value),box=$("res");pintarGrid();
-  if(q.length<2){box.innerHTML="";return}
-  const hits=filas.filter(f=>norm(f.nombre).includes(q));
+  const q=norm($("q").value),box=$("res");pintarGrid();box.innerHTML="";
+  if(!q)return;
+  const qt=tokens(q);
+  if(qt.length<2||qt.some(t=>t.length<3)){box.innerHTML='<div class="mut">Escribe tu nombre y un apellido (mínimo 3 letras cada uno) para ver tus tickets.</div>';return}
+  const hits=filas.filter(f=>coincide(f.nombre,q));
   if(!hits.length){box.innerHTML='<div class="mut">No encontramos ese nombre. Revisa cómo lo escribiste o escríbenos por Soporte.</div>';return}
-  box.innerHTML="";
-  hits.forEach(f=>{const d=document.createElement("div"),b=document.createElement("b");b.textContent=f.nombre;
+  hits.slice(0,5).forEach(f=>{
+    const d=document.createElement("div"),b=document.createElement("b");b.textContent=f.nombre;
     const sp=document.createElement("span");sp.className="mut";sp.textContent=" – "+f.dina;d.append(b,sp,document.createElement("br"));
     const s=SORTEOS.find(x=>norm(f.dina).includes(norm(x.clave)))||SORTEOS[0];
     f.nums.forEach(n=>{const t=document.createElement("span");t.className="badge";t.textContent=pad(n,s);d.appendChild(t)});box.appendChild(d)});
@@ -300,8 +309,19 @@ function pintarGanadores(){
     else{const d=document.createElement("div");d.className="ganador";d.textContent=`🏆 ${x.titulo} · ${x.nombre}`;l.appendChild(d)}})}
 
 $("lnkFb").href=FACEBOOK_URL;$("lnkCanal").href=CANAL_WSP_URL;$("soporte").href=wa("Hola SorteoYa, necesito ayuda.");$("fab").href=wa("Hola SorteoYa 👋");
-$("yNum").textContent=PAGO.numero;$("yNom").textContent=PAGO.nombre;
-$("copiar").onclick=e=>{navigator.clipboard?.writeText(PAGO.numero.replace(/\s/g,""));e.target.textContent="¡Copiado!";setTimeout(()=>e.target.textContent="Copiar número",1500)};
+let metodo="yape";
+function pintarPago(){
+  const p=PAGO[metodo],i=$("pQr");
+  $("pNum").textContent=p.numero;$("pNom").textContent=p.nombre;
+  $("tYape").className=metodo=="yape"?"yape":"";$("tPlin").className=metodo=="plin"?"plin":"";
+  i.style.display="";$("pQrMsg").textContent="";
+  i.onerror=()=>{i.style.display="none";$("pQrMsg").textContent="(Falta subir la imagen "+p.qr+")"};
+  i.src=p.qr;
+}
+$("tYape").onclick=()=>{metodo="yape";pintarPago()};
+$("tPlin").onclick=()=>{metodo="plin";pintarPago()};
+$("copiar").onclick=e=>{navigator.clipboard?.writeText(PAGO[metodo].numero.replace(/\s/g,""));e.target.textContent="¡Copiado!";setTimeout(()=>e.target.textContent="Copiar número",1500)};
+pintarPago();
 $("q").addEventListener("input",buscar);
 pintarGanadores();pintarCards();pintarGrid();cargar();
 setInterval(cargar,60000);setInterval(tick,1000);

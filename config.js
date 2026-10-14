@@ -20,7 +20,11 @@ const PAGO = {
 // fechaSorteo: cuando se agoten los números, escribe aquí el día y la hora
 const SORTEOS = [
   { clave:"electro", titulo:"Dinámica Electro", precio:12, packCant:2, packPrecio:20, packs:"2 por S/ 20",
-    premio:'TV JVC 43" QLED Smart TV', imagen:"tv.jpg",
+    premios:[
+      {n:"Refrigeradora Electrolux 138L", img:"refrigeradora.jpg"},
+      {n:"Cocina a gas Mabe 4 platos", img:"cocina.jpg"},
+      {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
+    ],
     otros:[
       {n:"Licuadora Práctika BL-600", img:"licuadora.jpg"},
       {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},

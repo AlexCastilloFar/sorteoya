@@ -114,6 +114,10 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .ptabs button.yape{background:#8a2be2}.ptabs button.plin{background:#00b8c4}
 .qr{width:210px;max-width:70%;background:#fff;padding:10px;border-radius:14px;margin:12px auto 0;display:block}
 .pay .small{font-size:.8rem;opacity:.8;margin-top:12px}
+.bigs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.bigs .prize{margin:0;min-height:260px}
+.bigs .prize.img img{height:210px}
+.bigs .prize strong{font-size:1rem;margin-top:6px}
 </style>
 </head>
 <body>
@@ -227,11 +231,12 @@ async function cargar(){
 function pintarCards(){
   $("cards").innerHTML=SORTEOS.map((s,i)=>{
     const oc=ocupados(s).size,total=s.hasta-s.desde+1,pct=Math.round(oc/total*100);
+    const grandes=s.premios||[{n:s.premio,img:s.imagen}],otros=s.otros||[];
     return `<div class="card">
       <div class="ch"><h3>${s.titulo}</h3><div class="price"><small>S/</small><b>${s.precio}</b><small>POR NÚMERO</small></div></div>
-      <div class="prize img"><span class="tag">🏆 PREMIO</span><img src="${s.imagen}" alt=""><strong>${s.premio}</strong></div>
-      <div class="lbl" style="text-align:left;margin-bottom:6px">+ ${s.otros.length} PREMIOS MÁS · SE SORTEAN POR SEPARADO</div>
-      <div class="minis">${s.otros.map(o=>`<div class="mini"><img src="${o.img}" alt="">${o.n}</div>`).join("")}</div>
+      <div class="bigs">${grandes.map(p=>`<div class="prize img"><span class="tag">🏆 PREMIO MAYOR</span><img src="${p.img}" alt=""><strong>${p.n}</strong></div>`).join("")}</div>
+      ${otros.length?`<div class="lbl" style="text-align:left;margin-bottom:6px">+ ${otros.length} PREMIOS MÁS · CADA PREMIO SE SORTEA POR SEPARADO</div>
+      <div class="minis">${otros.map(o=>`<div class="mini"><img src="${o.img}" alt="">${o.n}</div>`).join("")}</div>`:""}
       <div class="chips"><span class="chip">🎟️ 1 por S/ ${s.precio}</span><span class="chip">🎟️ ${s.packs}</span><span class="chip">Más boletos = más probabilidades</span></div>
       ${aviso(s,total-oc)}
       <div class="prog"><i style="width:${pct}%"></i></div>

@@ -201,7 +201,7 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 </footer>
 <a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 
-<script src="config.js"></script>
+<script>document.write('<script src="config.js?v='+Date.now()+'"><\/script>')</script>
 <script>
 
 
@@ -232,11 +232,11 @@ function pintarCards(){
   $("cards").innerHTML=SORTEOS.map((s,i)=>{
     const oc=ocupados(s).size,total=s.hasta-s.desde+1,pct=Math.round(oc/total*100);
     const grandes=s.premios||[{n:s.premio,img:s.imagen}],otros=s.otros||[];
+    const todos=[...(s.premios||[{n:s.premio,img:s.imagen}]),...(s.otros||[])];
     return `<div class="card">
       <div class="ch"><h3>${s.titulo}</h3><div class="price"><small>S/</small><b>${s.precio}</b><small>POR NÚMERO</small></div></div>
-      <div class="bigs">${grandes.map(p=>`<div class="prize img"><span class="tag">🏆 PREMIO MAYOR</span><img src="${p.img}" alt=""><strong>${p.n}</strong></div>`).join("")}</div>
-      ${otros.length?`<div class="lbl" style="text-align:left;margin-bottom:6px">+ ${otros.length} PREMIOS MÁS · CADA PREMIO SE SORTEA POR SEPARADO</div>
-      <div class="minis">${otros.map(o=>`<div class="mini"><img src="${o.img}" alt="">${o.n}</div>`).join("")}</div>`:""}
+      <div class="lbl" style="text-align:left;margin-top:12px">🎁 ${todos.length} PREMIOS · CADA PREMIO SE SORTEA POR SEPARADO</div>
+      <div class="bigs">${todos.map((p,k)=>`<div class="prize img"><span class="tag">🏆 ${k+1}° PREMIO</span><img src="${p.img}" alt=""><strong>${p.n}</strong></div>`).join("")}</div>
       <div class="chips"><span class="chip">🎟️ 1 por S/ ${s.precio}</span><span class="chip">🎟️ ${s.packs}</span><span class="chip">Más boletos = más probabilidades</span></div>
       ${aviso(s,total-oc)}
       <div class="prog"><i style="width:${pct}%"></i></div>

@@ -30,7 +30,7 @@ const SORTEOS = [
       {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},
       {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"}
     ],
-    fechaSorteo:"", desde:1, hasta:130 }
+    fechaSorteo:"", desde:1, hasta:350 }
 ];
 
 // Ganadores: foto = nombre del archivo subido junto a index.html

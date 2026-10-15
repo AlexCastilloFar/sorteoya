@@ -22,7 +22,7 @@ const SORTEOS = [
   { clave:"electro", titulo:"Dinámica Electro", precio:12, packCant:2, packPrecio:20, packs:"2 por S/ 20",
     premios:[
       {n:"Refrigeradora Electrolux 138L", img:"refrigeradora.jpg"},
-      {n:"Cocina a gas Mabe 4 platos", img:"cocina.jpg"},
+      {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"},
       {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
     ],
     otros:[

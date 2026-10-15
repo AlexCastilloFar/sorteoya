@@ -28,7 +28,12 @@ const SORTEOS = [
     otros:[
       {n:"Licuadora Práctika BL-600", img:"licuadora.jpg"},
       {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},
-      {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"}
+      {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"},
+      {n:"S/ 500 en efectivo", img:"premio-500.png"},
+      {n:"S/ 200 en efectivo", img:"premio-200.png"},
+      {n:"S/ 100 en efectivo", img:"premio-100.png"},
+      {n:"S/ 100 en efectivo", img:"premio-100.png"},
+      {n:"S/ 100 en efectivo", img:"premio-100.png"}
     ],
     fechaSorteo:"", desde:1, hasta:350 }
 ];

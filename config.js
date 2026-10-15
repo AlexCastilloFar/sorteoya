@@ -35,7 +35,7 @@ const SORTEOS = [
       {n:"S/ 100 en efectivo", img:"premio-100.png"},
       {n:"S/ 100 en efectivo", img:"premio-100.png"}
     ],
-    fechaSorteo:"", desde:1, hasta:500 }
+    fechaSorteo:"", desde:1, hasta:600 }
 ];
 
 // Ganadores: foto = nombre del archivo subido junto a index.html

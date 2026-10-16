@@ -337,6 +337,26 @@ function irA(n){
 
 function toggle(n){sel.has(n)?sel.delete(n):sel.add(n);pintarGrid()}
 
+// ===== Vendedoras: ?v=codigo (el cliente no ve nada; solo se avisa en silencio al servidor al comprar) =====
+function vendedoraActual(){
+  try{
+    const v=(new URLSearchParams(location.search).get("v")||"").trim().toLowerCase();
+    if(/^[a-z0-9_-]{2,20}$/.test(v))localStorage.setItem("sy_v",JSON.stringify({v:v,t:Date.now()}));
+    const g=JSON.parse(localStorage.getItem("sy_v")||"null");
+    if(g&&Date.now()-g.t<30*864e5)return g.v;
+  }catch(e){}
+  const m=(new URLSearchParams(location.search).get("v")||"").trim().toLowerCase();
+  return /^[a-z0-9_-]{2,20}$/.test(m)?m:"";
+}
+const VENDEDORA=vendedoraActual();
+function avisarVendedora(nums){
+  if(!VENDEDORA||!nums.length)return;
+  try{const cb="iv"+Date.now(),sc=document.createElement("script");
+    const fin=()=>{delete window[cb];sc.remove()};window[cb]=fin;sc.onerror=fin;
+    sc.src=API_RULETA+"?accion=intencion&v="+encodeURIComponent(VENDEDORA)+"&n="+nums.join(",")+"&callback="+cb;
+    document.head.appendChild(sc)}catch(e){}
+}
+
 // ===== Premios de la ruleta (vienen de ruleta.html con ?promo=ticket|descuento&p=ID&c=CODIGO) =====
 const _u=new URLSearchParams(location.search);
 let PROMO=["ticket","descuento"].includes(_u.get("promo"))?{tipo:_u.get("promo"),id:(_u.get("p")||"").slice(0,20),cod:(_u.get("c")||"").slice(0,20)}:null;
@@ -375,6 +395,7 @@ function comprar(){
   else if(PROMO&&l.length>=3)
     msg=`Hola, quiero comprar ${lista} usando mi descuento de S/ ${DESC} de la ruleta (premio ${PROMO.id}, código ${PROMO.cod}). Total con descuento: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
   else msg=`Hola, quiero comprar ${lista}. Total: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
+  avisarVendedora([...sel].sort((x,y)=>x-y));
   window.open(wa(msg),"_blank");
 }
 

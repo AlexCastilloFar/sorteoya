@@ -51,45 +51,70 @@ const tar=(s.tarifas||[{cant:1,precio:s.precio}]);
 const money=n=>"S/ "+Number(n).toFixed(2);
 const cap=t=>t.toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase());
 const todos=[...(s.premios||[]),...(s.otros||[])];
+const esEfectivo=p=>/efectivo/i.test(p.n);
+const nFis=todos.filter(p=>!esEfectivo(p)).length;
 const prem=todos.map((p,k)=>`<li><b class="k">${k+1}° ${p.tag?cap(p.tag):"Premio"}:</b> ${p.n}</li>`).join("");
 const tarif=tar.map(x=>`<li>${x.cant} boleto${x.cant>1?"s":""} = ${money(x.precio)}</li>`).join("");
+const tel="+"+String(WHATSAPP).replace(/(\d{2})(\d{3})(\d{3})(\d{3})/,"$1 $2 $3 $4");
 document.getElementById("doc").innerHTML=`
-<h2>1. Participación, requisitos y emisión de boletos</h2>
+<h2>1. Organizador</h2>
+<p><b class="k">Organizador:</b> Alex William Castillo Farfan, creador de SorteoYa.</p>
+<p><b class="k">Contacto:</b> ${tel} (WhatsApp).</p>
+
+<h2>2. Participación, requisitos y emisión de boletos</h2>
 <p><b class="k">Requisitos obligatorios:</b> para participar en el sorteo, el usuario debe ser mayor de edad y contar obligatoriamente con una cuenta bancaria propia (a su nombre) para la recepción de cualquier premio en efectivo.</p>
-<p><b class="k">Emisión total:</b> el sorteo cuenta con un total de <b>${total} boletos numerados</b>.</p>
+<p><b class="k">Emisión total:</b> el sorteo cuenta con un total de <b>${total} boletos numerados</b>, del ${s.desde} al ${s.hasta}.</p>
 <p><b class="k">Costo por boleto y promociones:</b></p>
 <ul>${tarif}</ul>
-<p><b class="k">Dinámica de compra:</b> el participante ingresa a la página web, elige de manera libre su número de boleto y realiza la selección, lo cual lo direccionará automáticamente a WhatsApp. Por ese medio enviará su comprobante de pago y registrará sus nombres y apellidos para completar la compra.</p>
+<p><b class="k">Dinámica de compra:</b> el participante ingresa a la página web, elige de manera libre su número de boleto y realiza la selección, lo cual lo direccionará automáticamente a WhatsApp. Por ese medio enviará su comprobante de pago y registrará sus nombres, apellidos y número de DNI para completar la compra.</p>
+<p><b class="k">Número repetido:</b> elegir un número en la página no lo reserva. Si dos o más personas eligen el mismo número, se quedará con él la primera persona que escriba por WhatsApp y complete su compra enviando el comprobante de pago. A la otra persona se le avisará que ese número ya está ocupado y deberá elegir otro.</p>
+<p><b class="k">Comprobantes y reembolsos:</b> no habrá reembolsos de ningún tipo. Los comprobantes de pago falsos o adulterados no serán válidos.</p>
 <p><b class="k">Verificación:</b> el participante podrá verificar sus nombres y boletos adquiridos directamente en la página web. En caso de tener dudas o consultas, puede escribir al área de soporte para recibir asistencia inmediata.</p>
 
-<h2>2. Restricciones de participación</h2>
+<h2>3. Restricciones de participación</h2>
 <p><b class="k">Prohibición:</b> no pueden participar el organizador del sorteo ni sus familiares directos (padres, abuelos, hermanos y pareja o cónyuge).</p>
 
-<h2>3. Plan de premios oficiales</h2>
+<h2>4. Plan de premios oficiales</h2>
 <p>El sorteo cuenta con múltiples premios independientes. Cada boleto tiene la oportunidad de ganar y, si se adquieren varios, los premios se pueden acumular:</p>
 <ul class="prem">${prem}</ul>
+<p><b class="k">Importante:</b> los premios en efectivo (del ${nFis+1}° al ${todos.length}° premio, incluido el premio consuelo) solo se sortean si se venden el 100% de los boletos dentro del plazo máximo indicado en el punto 5.</p>
 
-<h2>4. Fecha del sorteo</h2>
-<p><b class="k">Sin fecha fija:</b> el sorteo no tiene una fecha programada de manera anticipada. Se llevará a cabo únicamente una vez que se hayan vendido el 100% de los boletos emitidos.</p>
+<h2>5. Fecha del sorteo y plazo máximo</h2>
+<p><b class="k">Sin fecha fija:</b> el sorteo no tiene una fecha programada de manera anticipada. Se llevará a cabo una vez que se hayan vendido el 100% de los boletos emitidos. Cuando eso ocurra, se anunciará el día y la hora del sorteo.</p>
+<p><b class="k">Plazo máximo de venta:</b> el plazo máximo para vender todos los boletos es de <b>6 meses</b>, contados desde el inicio de la venta.</p>
+<p><b class="k">Si no se venden todos los boletos:</b> vencido ese plazo, se sortearán únicamente los premios de electrodomésticos (del 1° al ${nFis}° premio) entre los boletos vendidos hasta ese momento. Quedarán sin efecto los premios en efectivo y el premio consuelo, que dejará de estar activo.</p>
 <p><b class="k">Transmisión:</b> el sorteo se realizará de forma totalmente transparente y EN VIVO a través de la página oficial de Facebook de SorteoYa.</p>
 
-<h2>5. Reglas especiales: premio consuelo (mayor comprador)</h2>
+<h2>6. Mecánica del sorteo</h2>
+<p><b class="k">Boletos:</b> cada boleto tiene un número asignado. En total son ${total} boletos, del ${s.desde} al ${s.hasta}.</p>
+<p><b class="k">Extracción:</b> los números se sacan de una ánfora y se muestra en vivo el número ganador.</p>
+<p><b class="k">Orden de los premios:</b> la extracción se realiza según lo que el público pida durante la transmisión, dejando para el final los premios mayores: la refrigeradora, la cocina, el TV y el premio de S/ 500.</p>
+<p><b class="k">Número ganador:</b> el número ganador sale de la ánfora y ya no vuelve a ingresar. Los números que salgan "al agua" (que no ganan) sí vuelven a la ánfora. Por ejemplo: si el primer número sale "al agua", el segundo sale "al agua" y el tercero es el ganador, el tercero sale definitivamente de la ánfora y los otros dos regresan a ella.</p>
+<p>Un mismo número no puede ganar más de un premio. Una misma persona sí puede ganar más de un premio si tiene varios números.</p>
+
+<h2>7. Reglas especiales: premio consuelo (mayor comprador)</h2>
 <p><b class="k">Definición:</b> se otorgará un premio consuelo de S/ 200.00 en efectivo a la persona que haya acumulado la mayor cantidad de tickets comprados y que no haya resultado ganadora de ningún otro premio principal (ni en efectivo ni electrodoméstico).</p>
 <p><b class="k">Criterio de exclusión:</b> si el participante con más tickets ya ganó algún premio en el sorteo, la opción pasará automáticamente al siguiente participante con mayor cantidad de tickets válidos que siga sin ganar nada.</p>
 <p><b class="k">En caso de empate:</b> si se registra un empate entre dos o más participantes que cumplan con la mayor cantidad de tickets y cero premios, se realizará un mini sorteo en vivo entre ellos para definir de forma aleatoria al único ganador de los S/ 200.00.</p>
+<p><b class="k">Condición:</b> este premio solo está activo si se venden el 100% de los boletos dentro del plazo máximo indicado en el punto 5.</p>
 
-<h2>6. Validación e identificación de ganadores</h2>
+<h2>8. Validación e identificación de ganadores</h2>
 <p><b class="k">Identificación obligatoria:</b> cada ganador deberá identificarse obligatoriamente presentando una foto de su DNI para comprobar que es la persona premiada y mayor de edad.</p>
-<p><b class="k">Plazo de reclamo:</b> el plazo máximo para que los ganadores se pongan en contacto con el organizador de SorteoYa será de un máximo de 72 horas (3 días hábiles) después de realizado el sorteo. Vencido este plazo, no se aceptarán reclamos.</p>
+<p><b class="k">Plazo de reclamo:</b> el plazo máximo para que los ganadores se pongan en contacto con el organizador de SorteoYa es de 72 horas (3 días), contadas desde que se realizó el sorteo. No son necesariamente días hábiles. Vencido este plazo, no se aceptarán reclamos.</p>
 
-<h2>7. Entrega de premios</h2>
+<h2>9. Entrega de premios</h2>
 <p><b class="k">Premios en efectivo (incluyendo el premio consuelo):</b> serán entregados exclusivamente mediante transferencia bancaria a una cuenta que esté obligatoriamente a nombre del titular registrado como ganador.</p>
 <p><b class="k">Premios físicos (electrodomésticos):</b></p>
 <ul>
-<li><b class="k">Para ganadores en Lima:</b> podrán acercarse a recoger su premio directamente a la vivienda del organizador para llevárselo, o bien solicitar un envío mediante cargo.</li>
+<li><b class="k">Para ganadores en Lima:</b> podrán recoger su premio en un punto de entrega acordado previamente con el organizador, o bien solicitar un envío mediante cargo.</li>
 <li><b class="k">Para ganadores en provincia:</b> los premios se enviarán a través de la agencia de transportes Shalom hacia la dirección proporcionada por el titular. El costo del envío será asumido en su totalidad por el ganador (titular). SorteoYa y el organizador no se hacen responsables por maltratos, pérdidas o inconvenientes que puedan ocurrir durante el trayecto por parte de la agencia de envíos.</li>
 <li><b class="k">Condición de envío:</b> todo envío de premios físicos se realizará única y exclusivamente a nombre del titular registrado en el sorteo.</li>
-</ul>`;
+</ul>
+
+<h2>10. Datos personales</h2>
+<p><b class="k">Datos que se guardan:</b> de cada participante se guardan sus nombres y apellidos y su número de DNI.</p>
+<p><b class="k">Uso:</b> el número de DNI se utiliza únicamente para verificar la identidad. Ninguno de estos datos se utilizará para otra finalidad.</p>
+<p><b class="k">Aceptación:</b> al participar, el usuario acepta que se guarden sus datos y que se publique su nombre en caso de resultar ganador.</p>`;
 </script>
 </body>
 </html>

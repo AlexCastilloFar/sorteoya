@@ -121,6 +121,20 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .nota{display:block;font-size:.72rem;font-weight:600;color:var(--mut);margin-top:3px;text-align:center}
 footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 .flinks{margin:6px 0 10px}
+.jump{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-size:.85rem;font-weight:700;color:var(--mut)}
+.jump input{width:130px;padding:9px 12px;font-size:.95rem;border-radius:10px}
+.jump button{padding:9px 16px;border:0;border-radius:10px;background:var(--navy);color:var(--gold);font-weight:800;cursor:pointer}
+#irMsg{color:var(--bad);font-weight:600}
+.blocks{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;margin-bottom:6px;scroll-margin-top:130px}
+.blk{flex:0 0 auto;border:2px solid #d5dbef;background:#fff;color:var(--navy);border-radius:12px;padding:7px 12px;cursor:pointer;text-align:center;min-width:92px}
+.blk b{display:block;font-size:.95rem}.blk small{font-size:.7rem;color:var(--mut);font-weight:600}
+.blk.on{background:var(--navy);border-color:var(--navy);color:var(--gold)}.blk.on small{color:#ffffffb0}
+.d1,.d2{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:3px}.d1{background:#2b4bd6}.d2{background:var(--gold)}
+.bnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px;font-weight:700;color:var(--mut);font-size:.9rem}
+.bnav button{padding:11px 16px;border:0;border-radius:12px;background:var(--navy);color:var(--gold);font-weight:800;cursor:pointer}
+.bnav button:disabled{opacity:.35;cursor:default}
+@keyframes fl{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.flash{animation:fl .6s 3;outline:3px solid var(--navy);position:relative;z-index:2}
 </style>
 </head>
 <body>
@@ -154,8 +168,11 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
     <div class="panel">
       <div class="top"><div class="tabs" id="tabs"></div><button class="btn buy" id="buy" onclick="comprar()" style="display:none"></button></div>
       <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>Libre</span><span><i class="dot" style="background:var(--bad)"></i>Ocupado</span><span><i class="dot" style="background:var(--gold)"></i>Seleccionado</span><span><i class="dot" style="background:#2b4bd6"></i>Tus números</span><span id="resumen"></span></div>
+      <div class="jump"><label for="ir">Ir al número</label><input id="ir" type="number" inputmode="numeric" placeholder="Ej: 350"><button id="irBtn" type="button">Ir</button><span id="irMsg"></span></div>
+      <div class="blocks" id="bloques"></div>
       <div class="grid" id="grid"></div>
-      <p class="hint">Toca los números que quieras (puedes elegir varios) y luego presiona "Compra tus boletos". Se actualiza solo cada minuto.</p>
+      <div class="bnav" id="bnav"></div>
+      <p class="hint">Toca los números que quieras (puedes elegir varios, incluso de distintos bloques) y luego presiona "Compra tus boletos". Se actualiza solo cada minuto.</p>
     </div>
   </section>
 
@@ -183,10 +200,10 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
   <section>
     <div class="eyebrow">Así de fácil</div><h2>Cómo <b>participo</b></h2>
     <div class="steps">
-      <div class="step s1"><b>01</b><h4>Elige tu número</h4><p>Revisa los libres en la cuadrícula.</p></div>
-      <div class="step s2"><b>02</b><h4>Escríbenos</h4><p>Toca el número y te abre WhatsApp.</p></div>
-      <div class="step s3"><b>03</b><h4>Paga</h4><p>Por Yape o transferencia.</p></div>
-      <div class="step s4"><b>04</b><h4>Envía tu comprobante</h4><p>Y aparecerás en "Mis tickets".</p></div>
+      <div class="step s1"><b>01</b><h4>Elige tus números</h4><p>Toca los libres en la cuadrícula (puedes elegir varios).</p></div>
+      <div class="step s2"><b>02</b><h4>Escríbenos</h4><p>Presiona "Compra tus boletos" y se abre WhatsApp.</p></div>
+      <div class="step s3"><b>03</b><h4>Paga</h4><p>Por Yape o Plin.</p></div>
+      <div class="step s4"><b>04</b><h4>Envía tu comprobante</h4><p>Con tu nombre y apellidos. Y aparecerás en "Mis tickets".</p></div>
       <div class="step s5"><b>05</b><h4>¡A esperar!</h4><p>Mucha suerte el día del sorteo.</p></div>
     </div>
   </section>
@@ -255,7 +272,7 @@ function aviso(s,libres){
   return `<div class="aviso full">🔥 <b>¡Números agotados!</b><br>${s.fechaSorteo?`Sorteo: <b>${s.fechaSorteo}</b>`:"Pronto anunciaremos el día y la hora del sorteo."}</div>`;
 }
 
-function irNumeros(i){actual=i;pintarGrid();$("numeros").scrollIntoView({behavior:"smooth"})}
+function irNumeros(i){if(actual!==i){actual=i;foco=SORTEOS[i].desde}actual=i;pintarGrid();$("numeros").scrollIntoView({behavior:"smooth"})}
 
 let sel=new Set();
 // Tarifas: usa el precio más barato combinando los paquetes (ej: 4 boletos = 3 por 25 + 1 por 12)
@@ -266,19 +283,53 @@ function total(s,n){
   return m[n];
 }
 
+let foco=SORTEOS[0].desde;               // un número del bloque que se está viendo
+const tam=()=>window.matchMedia("(min-width:768px)").matches?300:100;   // PC/tablet: 300 · celular: 100
+
 function pintarGrid(){
-  $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};sel.clear();pintarGrid()">${s.titulo}</button>`).join("");
-  const s=SORTEOS[actual],oc=ocupados(s),q=norm($("q").value);
+  $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};sel.clear();foco=SORTEOS[${i}].desde;pintarGrid()">${s.titulo}</button>`).join("");
+  const s=SORTEOS[actual],oc=ocupados(s),q=norm($("q").value),T=tam();
   sel.forEach(n=>{if(oc.has(n))sel.delete(n)});
-  let h="",o=0;
-  for(let n=s.desde;n<=s.hasta;n++){
+  const N=s.hasta-s.desde+1,nb=Math.ceil(N/T);
+  const bl=Math.min(nb-1,Math.max(0,Math.floor((foco-s.desde)/T)));
+  const ini=s.desde+bl*T,fin=Math.min(s.hasta,ini+T-1);
+  const mios=new Set();oc.forEach((d,n)=>{if(coincide(d,q))mios.add(n)});
+  // botones de bloque
+  let p="";
+  for(let k=0;k<nb;k++){
+    const a=s.desde+k*T,z=Math.min(s.hasta,a+T-1);let lib=0,mi=false,se=false;
+    for(let n=a;n<=z;n++){if(!oc.has(n))lib++;if(mios.has(n))mi=true;if(sel.has(n))se=true}
+    p+=`<button class="blk${k==bl?" on":""}" onclick="irBloque(${k},false)"><b>${a}–${z}</b><small>${lib} libres${mi?'<i class="d1"></i>':""}${se?'<i class="d2"></i>':""}</small></button>`;
+  }
+  $("bloques").innerHTML=p;
+  const on=$("bloques").querySelector(".on");
+  if(on)$("bloques").scrollLeft=on.offsetLeft-$("bloques").clientWidth/2+on.clientWidth/2;
+  // números del bloque
+  let h="",o=oc.size;
+  for(let n=ini;n<=fin;n++){
     const d=oc.get(n),l=pad(n,s);
-    if(d){o++;h+=`<div class="n ocupado${coincide(d,q)?" match":""}">${l}</div>`}
-    else h+=`<div class="n libre${sel.has(n)?" sel":""}" onclick="toggle(${n})">${l}</div>`}
+    if(d)h+=`<div id="n-${n}" class="n ocupado${mios.has(n)?" match":""}">${l}</div>`;
+    else h+=`<div id="n-${n}" class="n libre${sel.has(n)?" sel":""}" onclick="toggle(${n})">${l}</div>`}
   $("grid").innerHTML=h;
-  $("resumen").textContent=`${o} ocupados · ${s.hasta-s.desde+1-o} libres`;
+  $("bnav").innerHTML=`<button ${bl==0?"disabled":""} onclick="irBloque(${bl-1},true)">← Anterior</button><span>Bloque ${bl+1} de ${nb}</span><button ${bl>=nb-1?"disabled":""} onclick="irBloque(${bl+1},true)">Siguiente →</button>`;
+  $("resumen").textContent=`${o} ocupados · ${N-o} libres`;
+  $("ir").placeholder=`Ej: ${s.hasta}`;
   const b=$("buy");b.style.display=sel.size?"":"none";
   b.textContent=`🛒 Compra tus boletos (${sel.size}) · S/ ${total(s,sel.size)}`;
+}
+
+function irBloque(k,subir){
+  foco=SORTEOS[actual].desde+k*tam();pintarGrid();
+  if(subir)$("bloques").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function irA(n){
+  const s=SORTEOS[actual];n=parseInt(n,10);
+  if(isNaN(n)||n<s.desde||n>s.hasta){$("irMsg").textContent=`Escribe un número del ${s.desde} al ${s.hasta}`;return false}
+  $("irMsg").textContent="";foco=n;pintarGrid();
+  const el=$("n-"+n);
+  if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.add("flash");setTimeout(()=>el.classList.remove("flash"),2200)}
+  return true;
 }
 
 function toggle(n){sel.has(n)?sel.delete(n):sel.add(n);pintarGrid()}
@@ -307,7 +358,7 @@ function buscar(){
     const d=document.createElement("div"),b=document.createElement("b");b.textContent=f.nombre;
     const sp=document.createElement("span");sp.className="mut";sp.textContent=" – "+f.dina;d.append(b,sp,document.createElement("br"));
     const s=SORTEOS.find(x=>norm(f.dina).includes(norm(x.clave)))||SORTEOS[0];
-    f.nums.forEach(n=>{const t=document.createElement("span");t.className="badge";t.textContent=pad(n,s);d.appendChild(t)});box.appendChild(d)});
+    f.nums.forEach(n=>{const t=document.createElement("span");t.className="badge";t.style.cursor="pointer";t.title="Ver en la cuadrícula";t.textContent=pad(n,s);t.onclick=()=>{actual=SORTEOS.indexOf(s);irA(n)};d.appendChild(t)});box.appendChild(d)});
 }
 
 function tick(){document.querySelectorAll(".cd").forEach(el=>{
@@ -338,6 +389,10 @@ $("tPlin").onclick=()=>{metodo="plin";pintarPago()};
 $("copiar").onclick=e=>{navigator.clipboard?.writeText(PAGO[metodo].numero.replace(/\s/g,""));e.target.textContent="¡Copiado!";setTimeout(()=>e.target.textContent="Copiar número",1500)};
 pintarPago();
 $("q").addEventListener("input",buscar);
+$("irBtn").onclick=()=>irA($("ir").value);
+$("ir").addEventListener("keydown",e=>{if(e.key==="Enter")irA($("ir").value)});
+$("ir").addEventListener("input",()=>{$("irMsg").textContent=""});
+window.matchMedia("(min-width:768px)").addEventListener("change",pintarGrid);
 pintarGanadores();pintarCards();pintarGrid();cargar();
 setInterval(cargar,60000);setInterval(tick,1000);
 </script>

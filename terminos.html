@@ -40,7 +40,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 <main><div class="doc" id="doc"></div></main>
 <footer>
   <img src="logo.png" alt="SorteoYa"><br>
-  <div class="flinks"><a href="terminos.html">Términos y condiciones</a> · <a href="index.html">Inicio</a></div>
+  <div class="flinks"><a href="terminos.html">Términos y condiciones</a> · <a href="ruleta.html">Ruleta de la suerte</a> · <a href="index.html">Inicio</a></div>
   © 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.
 </footer>
 <script>document.write('<script src="config.js?v='+Date.now()+'"><\/script>')</script>
@@ -93,7 +93,7 @@ document.getElementById("doc").innerHTML=`
 <p>Un mismo número no puede ganar más de un premio. Una misma persona sí puede ganar más de un premio si tiene varios números.</p>
 
 <h2>7. Reglas especiales: premio consuelo (mayor comprador)</h2>
-<p><b class="k">Definición:</b> se otorgará un premio consuelo de S/ 200.00 en efectivo a la persona que haya acumulado la mayor cantidad de tickets comprados y que no haya resultado ganadora de ningún otro premio principal (ni en efectivo ni electrodoméstico).</p>
+<p><b class="k">Definición:</b> se otorgará un premio consuelo de S/ 200.00 en efectivo a la persona que haya acumulado la mayor cantidad de tickets comprados y que no haya resultado ganadora de ningún otro premio principal (ni en efectivo ni electrodoméstico). Los boletos adicionales ganados en la ruleta no cuentan para este premio.</p>
 <p><b class="k">Criterio de exclusión:</b> si el participante con más tickets ya ganó algún premio en el sorteo, la opción pasará automáticamente al siguiente participante con mayor cantidad de tickets válidos que siga sin ganar nada.</p>
 <p><b class="k">En caso de empate:</b> si se registra un empate entre dos o más participantes que cumplan con la mayor cantidad de tickets y cero premios, se realizará un mini sorteo en vivo entre ellos para definir de forma aleatoria al único ganador de los S/ 200.00.</p>
 <p><b class="k">Condición:</b> este premio solo está activo si se venden el 100% de los boletos dentro del plazo máximo indicado en el punto 5.</p>
@@ -111,7 +111,19 @@ document.getElementById("doc").innerHTML=`
 <li><b class="k">Condición de envío:</b> todo envío de premios físicos se realizará única y exclusivamente a nombre del titular registrado en el sorteo.</li>
 </ul>
 
-<h2>10. Datos personales</h2>
+<h2>10. Ruleta de la suerte</h2>
+<p><b class="k">Qué es:</b> promoción adicional sin costo. Cada compra confirmada genera un <b>código único y personal</b> (formato SY-XXXXXXXX) que se entrega por WhatsApp y sirve para girar la ruleta en la página.</p>
+<p><b class="k">Giros por compra:</b> 3 boletos = 1 giro · 6 = 3 · 9 = 5 · 12 = 7 · 15 o más = 10 giros. Cada compra tiene su propio código y los giros de distintas compras <b>no se suman</b>. El máximo es 10 giros por código; los giros extra ganados en la ruleta se suman además de ese máximo.</p>
+<p><b class="k">Resultados y probabilidades:</b> en cada giro el sistema elige el resultado al azar: 50% suerte para la próxima, 25% giro extra, 15% descuento de S/ 5 y 10% boleto adicional. El resultado lo define el sistema y no puede repetirse, modificarse ni reclamarse un giro ya realizado.</p>
+<p><b class="k">Descuento de S/ 5:</b> se aplica a una sola compra de <b>3 boletos o más</b> y un solo descuento por compra.</p>
+<p><b class="k">Boleto adicional:</b> es un boleto gratis que el participante elige entre los números libres, igual que uno comprado, y se aplica la regla de número repetido del punto 2. Entra al sorteo con los mismos derechos que un boleto pagado, <b>salvo</b> que no cuenta para el premio consuelo ni genera nuevos giros. Si ya no quedan números libres, el premio queda sin efecto.</p>
+<p><b class="k">Cómo se usan los premios:</b> desde la página de la ruleta, con el botón del premio, que lleva a elegir números y envía el pedido por WhatsApp con el código y el ID del premio. El organizador confirma el canje.</p>
+<p><b class="k">Vigencia:</b> la ruleta funciona hasta que se vendan los ${total} boletos. Después se cierra y los giros y premios no usados quedan sin efecto.</p>
+<p><b class="k">Sin valor en efectivo:</b> los premios de la ruleta no se canjean por dinero ni se transfieren.</p>
+<p><b class="k">Código personal:</b> quien tenga el código puede usarlo; el participante debe cuidarlo. SorteoYa no repone giros perdidos o usados por terceros.</p>
+<p><b class="k">Uso indebido:</b> si se detecta fraude o intento de manipular el sistema, el organizador puede anular los giros y premios del código.</p>
+
+<h2>11. Datos personales</h2>
 <p><b class="k">Datos que se guardan:</b> de cada participante se guardan sus nombres y apellidos y su número de DNI.</p>
 <p><b class="k">Uso:</b> el número de DNI se utiliza únicamente para verificar la identidad. Ninguno de estos datos se utilizará para otra finalidad.</p>
 <p><b class="k">Aceptación:</b> al participar, el usuario acepta que se guarden sus datos y que se publique su nombre en caso de resultar ganador.</p>`;

@@ -107,10 +107,10 @@ function pintar(e){
     const d=document.createElement("div");d.className="prem";
     const t=document.createElement("div");t.textContent=(p.tipo==="TICKET"?"🎟️ Boleto adicional":"💸 Descuento de S/ 5");
     const s=document.createElement("small");s.textContent=p.estado==="CANJEADO"?"Canjeado ✓":p.estado==="ANULADO"?"Anulado":e.cerrada?"Sin efecto (se agotaron los boletos)":"Pendiente de canje";t.appendChild(s);d.appendChild(t);
-    if(p.vigente){const a=document.createElement("a");a.textContent="Reclamar";a.target="_blank";a.rel="noopener";
-      a.href="https://wa.me/"+wa+"?text="+encodeURIComponent("Hola, quiero reclamar mi premio de la ruleta: "+(p.tipo==="TICKET"?"boleto adicional":"descuento de S/ 5")+" (ID "+p.id+"). Mi código es "+e.codigo+".");d.appendChild(a)}
+    if(p.vigente){const a=document.createElement("a");a.textContent=p.tipo==="TICKET"?"Elegir mi número":"Usar mi descuento";
+      a.href="index.html?promo="+(p.tipo==="TICKET"?"ticket":"descuento")+"&p="+encodeURIComponent(p.id)+"&c="+encodeURIComponent(e.codigo)+"#numeros";d.appendChild(a)}
     L.appendChild(d)});
-  $("notaPrem").textContent=e.cerrada?"La ruleta está cerrada: ya se agotaron los boletos.":"Los premios valen hasta el día del sorteo y los confirma el organizador por WhatsApp.";
+  $("notaPrem").textContent=e.cerrada?"La ruleta está cerrada: ya se agotaron los boletos.":"Los premios valen hasta el día del sorteo y se aplican al comprar en la página; el organizador los confirma por WhatsApp.";
 }
 
 async function entrar(){

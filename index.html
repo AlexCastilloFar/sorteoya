@@ -168,6 +168,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
   <section id="numeros">
     <div class="eyebrow">Elige tu suerte</div><h2>Mira los <b>números</b></h2>
     <div class="panel">
+      <div id="promo" style="display:none;background:#fff7d6;border:2px solid var(--gold);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-weight:700;font-size:.92rem"></div>
       <div class="top"><div class="tabs" id="tabs"></div><button class="btn buy" id="buy" onclick="comprar()" style="display:none"></button></div>
       <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>Libre</span><span><i class="dot" style="background:var(--bad)"></i>Ocupado</span><span><i class="dot" style="background:var(--gold)"></i>Seleccionado</span><span><i class="dot" style="background:#2b4bd6"></i>Tus números</span><span id="resumen"></span></div>
       <div class="jump"><label for="ir">Ir al número</label><input id="ir" type="number" inputmode="numeric" placeholder="Ej: 350"><button id="irBtn" type="button">Ir</button><span id="irMsg"></span></div>
@@ -317,7 +318,7 @@ function pintarGrid(){
   $("resumen").textContent=`${o} ocupados · ${N-o} libres`;
   $("ir").placeholder=`Ej: ${s.hasta}`;
   const b=$("buy");b.style.display=sel.size?"":"none";
-  b.textContent=`🛒 Compra tus boletos (${sel.size}) · S/ ${total(s,sel.size)}`;
+  b.textContent=`🛒 Compra tus boletos (${sel.size}) · S/ ${precio(s,sel.size)}`;pintarPromo();
 }
 
 function irBloque(k,subir){
@@ -336,10 +337,32 @@ function irA(n){
 
 function toggle(n){sel.has(n)?sel.delete(n):sel.add(n);pintarGrid()}
 
+// ===== Premios de la ruleta (vienen de ruleta.html con ?promo=ticket|descuento&p=ID&c=CODIGO) =====
+const _u=new URLSearchParams(location.search);
+const PROMO=["ticket","descuento"].includes(_u.get("promo"))?{tipo:_u.get("promo"),id:(_u.get("p")||"").slice(0,20),cod:(_u.get("c")||"").slice(0,20)}:null;
+const DESC=5;
+function precio(s,n){
+  if(PROMO&&PROMO.tipo==="ticket")return total(s,Math.max(0,n-1));
+  if(PROMO&&PROMO.tipo==="descuento"&&n>=3)return Math.max(0,total(s,n)-DESC);
+  return total(s,n);
+}
+function pintarPromo(){
+  const b=$("promo");if(!PROMO){b.style.display="none";return}
+  const n=sel.size;b.style.display="";
+  if(PROMO.tipo==="ticket")b.innerHTML=`🎟️ <b>Boleto adicional de la ruleta:</b> tu primer número seleccionado sale <b>GRATIS</b>. ${n?`Llevas ${n} (${n>1?"pagas "+(n-1):"1 gratis"}).`:"Elige tus números abajo."}`;
+  else b.innerHTML=`💸 <b>Descuento de S/ ${DESC} de la ruleta:</b> compra <b>3 boletos o más</b> y se descuenta del total. ${n>=3?"✅ Descuento aplicado.":`Te faltan ${Math.max(0,3-n)} para activarlo.`}`;
+}
 function comprar(){
   const s=SORTEOS[actual],l=[...sel].sort((a,b)=>a-b).map(n=>pad(n,s));
   if(!l.length)return;
-  window.open(wa(`Hola, quiero comprar ${l.length>1?"los números":"el número"} ${l.join(", ")} de la ${s.titulo}. Total: S/ ${total(s,l.length)}. ¿Siguen disponibles?`),"_blank");
+  const lista=`${l.length>1?"los números":"el número"} ${l.join(", ")} de la ${s.titulo}`;
+  let msg;
+  if(PROMO&&PROMO.tipo==="ticket")
+    msg=`Hola, gané un boleto extra en la ruleta (premio ${PROMO.id}, código ${PROMO.cod}) y quiero el número ${l[0]} GRATIS${l.length>1?`, y además comprar ${l.slice(1).length>1?"los números":"el número"} ${l.slice(1).join(", ")} de la ${s.titulo}`:""}. Total a pagar: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
+  else if(PROMO&&l.length>=3)
+    msg=`Hola, quiero comprar ${lista} usando mi descuento de S/ ${DESC} de la ruleta (premio ${PROMO.id}, código ${PROMO.cod}). Total con descuento: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
+  else msg=`Hola, quiero comprar ${lista}. Total: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
+  window.open(wa(msg),"_blank");
 }
 
 // Solo coincide con nombre + apellido completos (mín. 3 letras cada uno)
@@ -395,7 +418,7 @@ $("irBtn").onclick=()=>irA($("ir").value);
 $("ir").addEventListener("keydown",e=>{if(e.key==="Enter")irA($("ir").value)});
 $("ir").addEventListener("input",()=>{$("irMsg").textContent=""});
 window.matchMedia("(min-width:768px)").addEventListener("change",pintarGrid);
-pintarGanadores();pintarCards();pintarGrid();cargar();
+pintarGanadores();pintarCards();pintarGrid();cargar();if(PROMO)setTimeout(()=>$("numeros").scrollIntoView(),300);
 setInterval(cargar,60000);setInterval(tick,1000);
 </script>
 </body>

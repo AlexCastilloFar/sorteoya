@@ -19,7 +19,7 @@ const PAGO = {
 // packCant/packPrecio = promo (2 boletos por S/ 20). El total se calcula solo.
 // fechaSorteo: cuando se agoten los números, escribe aquí el día y la hora
 const SORTEOS = [
-  { clave:"electro", titulo:"Dinámica Electro", precio:12, packCant:2, packPrecio:20, packs:"2 por S/ 20",
+  { clave:"electro", titulo:"Dinámica Electro", precio:12, tarifas:[{cant:1,precio:12},{cant:2,precio:20},{cant:3,precio:25}],
     premios:[
       {n:"Refrigeradora Electrolux 138L", img:"refrigeradora.jpg"},
       {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"},
@@ -30,10 +30,11 @@ const SORTEOS = [
       {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},
       {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"},
       {n:"S/ 500 en efectivo", img:"premio-500.png"},
+      {n:"S/ 300 en efectivo", img:"premio-300.png"},
       {n:"S/ 200 en efectivo", img:"premio-200.png"},
-      {n:"S/ 100 en efectivo", img:"premio-100.png"},
-      {n:"S/ 100 en efectivo", img:"premio-100.png"},
-      {n:"S/ 100 en efectivo", img:"premio-100.png"}
+      {n:"S/ 150 en efectivo", img:"premio-150.png"},
+      {n:"S/ 200 en efectivo", img:"premio-200.png", 
+    tag:"PREMIO CONSUELO", nota:"Para quien compre más boletos y no gane otro premio"}
     ],
     fechaSorteo:"", desde:1, hasta:600 }
 ];

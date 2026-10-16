@@ -287,7 +287,7 @@ function total(s,n){
 }
 
 let foco=SORTEOS[0].desde;               // un número del bloque que se está viendo
-const tam=()=>window.matchMedia("(min-width:768px)").matches?300:100;   // PC/tablet: 300 · celular: 100
+const tam=()=>window.matchMedia("(min-width:768px)").matches?150:100;   // PC/tablet: 150 (4 bloques de 600) · celular: 100
 
 function pintarGrid(){
   $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};sel.clear();foco=SORTEOS[${i}].desde;pintarGrid()">${s.titulo}</button>`).join("");
@@ -339,15 +339,28 @@ function toggle(n){sel.has(n)?sel.delete(n):sel.add(n);pintarGrid()}
 
 // ===== Premios de la ruleta (vienen de ruleta.html con ?promo=ticket|descuento&p=ID&c=CODIGO) =====
 const _u=new URLSearchParams(location.search);
-const PROMO=["ticket","descuento"].includes(_u.get("promo"))?{tipo:_u.get("promo"),id:(_u.get("p")||"").slice(0,20),cod:(_u.get("c")||"").slice(0,20)}:null;
+let PROMO=["ticket","descuento"].includes(_u.get("promo"))?{tipo:_u.get("promo"),id:(_u.get("p")||"").slice(0,20),cod:(_u.get("c")||"").slice(0,20)}:null;
 const DESC=5;
 function precio(s,n){
   if(PROMO&&PROMO.tipo==="ticket")return total(s,Math.max(0,n-1));
   if(PROMO&&PROMO.tipo==="descuento"&&n>=3)return Math.max(0,total(s,n)-DESC);
   return total(s,n);
 }
+const API_RULETA=(typeof RULETA_API!=="undefined"&&RULETA_API)||"https://script.google.com/macros/s/AKfycbzF2CeJKpISVyt2RWDocL05IxqWwb1yxEYAobQ1vxd8Y8O0xvWrVycs6o6ajaaiUcE/exec";
+let promoMsg="";
+// Verifica con el servidor que el premio siga pendiente; si ya fue canjeado, se quita el aviso
+function verificarPromo(){
+  if(!PROMO||!PROMO.cod)return;
+  const cb="pv"+Date.now(),sc=document.createElement("script");
+  const fin=()=>{delete window[cb];sc.remove()};
+  window[cb]=d=>{fin();
+    const p=d&&d.ok?(d.premios||[]).find(x=>String(x.id)===PROMO.id):null;
+    if(!p||!p.vigente){PROMO=null;promoMsg=p&&p.estado==="CANJEADO"?"✅ Este premio ya fue canjeado.":"Este premio ya no está disponible.";pintarGrid()}};
+  sc.onerror=fin;
+  sc.src=API_RULETA+"?accion=estado&codigo="+encodeURIComponent(PROMO.cod)+"&callback="+cb;document.head.appendChild(sc);
+}
 function pintarPromo(){
-  const b=$("promo");if(!PROMO){b.style.display="none";return}
+  const b=$("promo");if(!PROMO){if(promoMsg){b.style.display="";b.textContent=promoMsg}else b.style.display="none";return}
   const n=sel.size;b.style.display="";
   if(PROMO.tipo==="ticket")b.innerHTML=`🎟️ <b>Boleto adicional de la ruleta:</b> tu primer número seleccionado sale <b>GRATIS</b>. ${n?`Llevas ${n} (${n>1?"pagas "+(n-1):"1 gratis"}).`:"Elige tus números abajo."}`;
   else b.innerHTML=`💸 <b>Descuento de S/ ${DESC} de la ruleta:</b> compra <b>3 boletos o más</b> y se descuenta del total. ${n>=3?"✅ Descuento aplicado.":`Te faltan ${Math.max(0,3-n)} para activarlo.`}`;
@@ -418,7 +431,7 @@ $("irBtn").onclick=()=>irA($("ir").value);
 $("ir").addEventListener("keydown",e=>{if(e.key==="Enter")irA($("ir").value)});
 $("ir").addEventListener("input",()=>{$("irMsg").textContent=""});
 window.matchMedia("(min-width:768px)").addEventListener("change",pintarGrid);
-pintarGanadores();pintarCards();pintarGrid();cargar();if(PROMO)setTimeout(()=>$("numeros").scrollIntoView(),300);
+pintarGanadores();pintarCards();pintarGrid();cargar();if(PROMO){verificarPromo();setTimeout(()=>$("numeros").scrollIntoView(),300)}
 setInterval(cargar,60000);setInterval(tick,1000);
 </script>
 </body>

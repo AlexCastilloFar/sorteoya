@@ -55,7 +55,6 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}footer a{color:var(--
     <div class="rw"><div class="ptr"></div><svg id="rueda" viewBox="-200 -200 400 400"></svg></div>
     <button class="btn" id="girar">🎡 GIRAR</button>
     <div class="res" id="res" hidden></div>
-    <p class="prob" id="prob"></p>
   </div>
   <div class="card" id="cPremios" hidden>
     <h2>Tus premios</h2><div id="lista"></div>
@@ -99,7 +98,6 @@ function pintar(e){
   $("giros").textContent=e.giros_restantes+(e.giros_restantes===1?" giro":" giros");
   const b=$("girar");b.disabled=girando||e.cerrada||e.giros_restantes<=0;
   b.textContent=e.cerrada?"Ruleta cerrada":e.giros_restantes<=0?"Sin giros disponibles":"🎡 GIRAR";
-  if(e.probabilidades)$("prob").textContent="Probabilidades por giro: "+Object.keys(TXT).map(k=>(e.probabilidades[k]||0)+"% "+(k==="SUERTE"?"suerte":k==="GIRO"?"giro extra":k==="DESCUENTO"?"descuento S/ 5":"boleto adicional")).join(" · ");
   const wa=typeof WHATSAPP!=="undefined"?WHATSAPP:"";
   const L=$("lista");L.innerHTML="";
   if(!e.premios.length)L.innerHTML='<p class="mut">Aún no tienes premios. ¡Sigue girando!</p>';
@@ -127,17 +125,26 @@ function msg(t,err){const m=$("msg");m.textContent=t;m.className="msg"+(err?" er
 function destino(i,n){
   const a=360/n,centro=(i+.5)*a+(Math.random()-.5)*a*.6;
   const obj=((360-centro)%360+360)%360,base=((rot%360)+360)%360;
-  rot=rot+360*5+((obj-base+360)%360);return rot}
+  rot=rot+360*4+((obj-base+360)%360);return rot}
 
+function anguloActual(){
+  try{const m=getComputedStyle($("rueda")).transform;
+    if(m&&m!=="none"){const v=m.match(/matrix\(([^)]+)\)/);if(v){const q=v[1].split(",").map(Number);return(Math.atan2(q[1],q[0])*180/Math.PI+360)%360}}}catch(x){}
+  return ((rot%360)+360)%360;
+}
 async function girar(){
   if(girando||!est)return;girando=true;$("girar").disabled=true;$("res").hidden=true;
+  // La rueda empieza a girar al instante, mientras el servidor responde
+  const R=$("rueda");R.style.transition="transform 12s linear";rot=anguloActual()+360*12;R.style.transform="rotate("+rot+"deg)";
+  const parar=()=>{const c=anguloActual();R.style.transition="none";rot=c;R.style.transform="rotate("+c+"deg)";void R.offsetWidth;R.style.transition=""};
   let r;
   try{r=await jsonp("girar",codigo)}catch(x){
-    girando=false;$("res").hidden=false;$("res").textContent="No pudimos confirmar tu giro. Recarga la página y revisa tus giros con tu código.";return}
-  if(!r.ok){girando=false;$("res").hidden=false;$("res").textContent=r.error||"No se pudo girar.";pintar(Object.assign({},est,{giros_restantes:r.error&&/giros/.test(r.error)?0:est.giros_restantes}));return}
-  $("rueda").style.transform="rotate("+destino(r.casilla,est.casillas.length)+"deg)";
+    parar();girando=false;$("res").hidden=false;$("res").textContent="No pudimos confirmar tu giro. Recarga la página y revisa tus giros con tu código.";return}
+  if(!r.ok){parar();girando=false;$("res").hidden=false;$("res").textContent=r.error||"No se pudo girar.";pintar(Object.assign({},est,{giros_restantes:r.error&&/giros/.test(r.error)?0:est.giros_restantes}));return}
+  parar();
+  R.style.transform="rotate("+destino(r.casilla,est.casillas.length)+"deg)";
   setTimeout(()=>{
-    girando=false;r.casillas=est.casillas;r.probabilidades=est.probabilidades;pintar(r);
+    girando=false;r.casillas=est.casillas;pintar(r);
     const x=$("res");x.hidden=false;x.textContent=(ICONO[r.tipo]||"")+" "+r.etiqueta;
   },4800);
 }

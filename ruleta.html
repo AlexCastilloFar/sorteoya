@@ -117,6 +117,13 @@ async function entrar(){
   $("elige").innerHTML="";
   $("entrar").disabled=true;msg("Verificando…");
   try{const e=await jsonp("estado",c);
+    // Solo si la persona escribió su DNI aquí: se recuerda (en su celular, 12 horas) para canjear sus premios sin volver a pedir datos.
+    // Guarda por cada código su titular; así un código ajeno nunca recibe estos datos.
+    if(e.ok){const dg=c.replace(/[\s-]/g,"");
+      if(/^\d{7,12}$/.test(dg)){try{const por={};
+        if(e.multiple)e.compras.forEach(k=>{if(k.codigo&&k.titular)por[k.codigo]=k.titular});
+        else if(e.codigo&&e.titular)por[e.codigo]=e.titular;
+        localStorage.setItem("sy_ruleta",JSON.stringify({dni:dg,por:por,t:Date.now()}))}catch(x){}}}
     if(!e.ok){msg(e.error||"No se pudo verificar.",1)}
     else if(e.multiple){
       msg("Tienes "+e.compras.length+" compras con giros. Elige una:");

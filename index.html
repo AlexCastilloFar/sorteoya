@@ -237,9 +237,9 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 <div class="dmodal" id="dmodal" onclick="if(event.target===this)cerrarDatos()">
   <form class="dbox" id="dform" onsubmit="return enviarDatos(event)" novalidate>
     <h3>📝 Antes de continuar</h3>
-    <p>Escribe tus datos para registrar tus números. Se guardan solo en este celular para tu próxima compra.</p>
+    <p>Escribe tus datos para registrar tus números. Solo se usan para registrar tu compra.</p>
     <label for="dnom">Nombre completo</label>
-    <input id="dnom" placeholder="Ej: Alex Castillo" autocomplete="name" maxlength="60">
+    <input id="dnom" placeholder="Ej: Alex Castillo" autocomplete="off" maxlength="60">
     <label for="ddni">DNI</label>
     <input id="ddni" inputmode="numeric" placeholder="Ej: 12345678" autocomplete="off" maxlength="12">
     <div class="derr" id="derr"></div>
@@ -398,11 +398,10 @@ function verificarPromo(){
   const cb="pv"+Date.now(),sc=document.createElement("script");
   const fin=()=>{delete window[cb];sc.remove()};
   window[cb]=d=>{fin();
-    TITULAR=d&&d.ok&&d.titular&&d.titular.nombre&&d.titular.dni?d.titular:null;
     const p=d&&d.ok?(d.premios||[]).find(x=>String(x.id)===PROMO.id):null;
     if(!p||!p.vigente){PROMO=null;promoMsg=p&&p.estado==="CANJEADO"?"✅ Este premio ya fue canjeado.":"Este premio ya no está disponible.";pintarGrid()}};
   sc.onerror=fin;
-  sc.src=API_RULETA+"?accion=estado&titular=1&codigo="+encodeURIComponent(PROMO.cod)+"&callback="+cb;document.head.appendChild(sc);
+  sc.src=API_RULETA+"?accion=estado&codigo="+encodeURIComponent(PROMO.cod)+"&callback="+cb;document.head.appendChild(sc);
 }
 function pintarPromo(){
   const b=$("promo");if(!PROMO){if(promoMsg){b.style.display="";b.textContent=promoMsg}else b.style.display="none";return}
@@ -410,19 +409,27 @@ function pintarPromo(){
   if(PROMO.tipo==="ticket")b.innerHTML=`🎟️ <b>Boleto adicional de la ruleta:</b> tu primer número seleccionado sale <b>GRATIS</b>. ${n?`Llevas ${n} (${n>1?"pagas "+(n-1):"1 gratis"}).`:"Elige tus números abajo."}`;
   else b.innerHTML=`💸 <b>Descuento de S/ ${DESC} de la ruleta:</b> compra <b>3 boletos o más</b> y se descuenta del total. ${n>=3?"✅ Descuento aplicado.":`Te faltan ${Math.max(0,3-n)} para activarlo.`}`;
 }
-// Dueño del código de la ruleta (lo devuelve el servidor al verificar el premio). Si hay premio, no se piden datos.
-let TITULAR=null;
+// Datos para canjear un premio: SOLO si la persona viene de la ruleta (donde escribió su DNI en este mismo celular)
+// y el código del premio es uno de los suyos. Nunca se muestran en pantalla. Si no, el mensaje sale solo con el código.
+function datosPromo(){
+  try{
+    const r=JSON.parse(localStorage.getItem("sy_ruleta")||"null");
+    if(!r||!r.por||!/^\d{7,12}$/.test(r.dni||"")||Date.now()-r.t>12*36e5)return null;
+    const k=Object.keys(r.por).find(x=>x.toUpperCase()===String(PROMO.cod||"").toUpperCase());
+    if(!k)return null;
+    return {dni:r.dni,nombre:bonito(String(r.por[k]||"").trim())};
+  }catch(e){return null}
+}
+try{localStorage.removeItem("sy_datos");localStorage.removeItem("sy_dni")}catch(e){}   // versiones anteriores
 const LETRAS="A-Za-zÁÉÍÓÚÜÑáéíóúüñ'.-";
 const RE_NOMBRE=new RegExp("^["+LETRAS+"]{2,}(\\s+["+LETRAS+"]{2,})+$");
-function datosGuardados(){try{return JSON.parse(localStorage.getItem("sy_datos")||"null")||{}}catch(e){return {}}}
-function guardarDatos(d){try{localStorage.setItem("sy_datos",JSON.stringify(d))}catch(e){}}
-function bonito(n){return n.toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase())}
+function bonito(n){return n.trim().replace(/\s+/g," ").toLowerCase().replace(/(^|\s)\S/g,m=>m.toUpperCase())}
 
-// quien = {nombre, dni} o null (premio de ruleta sin datos del servidor: el código identifica al dueño)
+// quien = {nombre, dni} (nombre puede ir vacío) o null (solo con el código del premio)
 function irWhatsApp(quien){
   const s=SORTEOS[actual],l=[...sel].sort((a,b)=>a-b).map(n=>pad(n,s));
   if(!l.length)return;
-  const yo=quien?`, soy ${quien.nombre}, con DNI ${quien.dni}`:"";
+  const yo=!quien?"":quien.nombre?`, soy ${quien.nombre}, con DNI ${quien.dni}`:`, mi DNI es ${quien.dni}`;
   const lista=`${l.length>1?"los números":"el número"} ${l.join(", ")} de la ${s.titulo}`;
   let msg;
   if(PROMO&&PROMO.tipo==="ticket")
@@ -435,11 +442,11 @@ function irWhatsApp(quien){
 }
 function comprar(){
   if(!sel.size)return;
-  if(PROMO){irWhatsApp(TITULAR);return}          // viene de la ruleta: ya tiene dueño, directo a WhatsApp
-  const g=datosGuardados();
-  $("dnom").value=g.nombre||"";$("ddni").value=g.dni||"";$("derr").textContent="";
+  if(PROMO){irWhatsApp(datosPromo());return}     // viene de la ruleta: directo a WhatsApp, sin ventana
+  // Compra normal: la ventana SIEMPRE se abre vacía (puede estar comprando para otra persona)
+  $("dnom").value="";$("ddni").value="";$("derr").textContent="";
   $("dmodal").classList.add("on");
-  setTimeout(()=>{(g.nombre?$("ddni"):$("dnom")).focus()},50);
+  setTimeout(()=>$("dnom").focus(),50);
 }
 function cerrarDatos(){$("dmodal").classList.remove("on")}
 function enviarDatos(e){
@@ -448,7 +455,7 @@ function enviarDatos(e){
   if(!RE_NOMBRE.test(nombre)){$("derr").textContent="Escribe tu nombre y apellido (ej: Alex Castillo).";return false}
   if(dni.length<7||dni.length>12){$("derr").textContent="El DNI debe tener 8 números.";return false}
   const d={nombre:bonito(nombre),dni:dni};
-  guardarDatos(d);cerrarDatos();irWhatsApp(d);
+  cerrarDatos();irWhatsApp(d);
   return false;
 }
 

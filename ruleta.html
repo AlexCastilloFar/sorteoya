@@ -41,14 +41,15 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}footer a{color:var(--
 </head>
 <body>
 <header><div class="bar"><a class="brand" href="index.html"><img src="logo.png" alt="SorteoYa"><span>SorteoYa</span></a><a class="back" href="index.html">← Volver al inicio</a></div></header>
-<div class="hero"><h1>Ruleta de la <b>suerte</b> 🎡</h1><p>Ingresa tu código y gira</p></div>
+<div class="hero"><h1>Ruleta de la <b>suerte</b> 🎡</h1><p>Escribe tu DNI y gira</p></div>
 <main>
   <div class="card" id="cEntrada">
-    <h2>Tu código</h2>
-    <input id="cod" placeholder="SY-XXXXXXXX" autocomplete="off" autocapitalize="characters" maxlength="16">
+    <h2>Tu DNI</h2>
+    <input id="cod" placeholder="Escribe tu DNI" inputmode="numeric" autocomplete="off" maxlength="16">
     <button class="btn" id="entrar">Entrar</button>
     <div class="msg" id="msg"></div>
-    <p class="mut" style="margin-top:10px;text-align:center">¿Aún no tienes código? Se entrega al comprar 3 boletos o más. Escríbenos por WhatsApp.</p>
+    <div id="elige"></div>
+    <p class="mut" style="margin-top:10px;text-align:center">Usa el DNI con el que te registramos. Los giros se dan desde 3 boletos pagados en una misma compra.</p>
   </div>
   <div class="card" id="cRuleta" hidden>
     <div class="top"><h2 id="hola" style="margin:0"></h2><span class="pill" id="giros"></span></div>
@@ -112,11 +113,17 @@ function pintar(e){
 }
 
 async function entrar(){
-  const c=$("cod").value.trim();if(c.length<6){msg("Escribe tu código completo.",1);return}
+  const c=$("cod").value.trim();if(c.length<6){msg("Escribe tu DNI completo.",1);return}
+  $("elige").innerHTML="";
   $("entrar").disabled=true;msg("Verificando…");
   try{const e=await jsonp("estado",c);
-    if(!e.ok){msg(e.error||"Código no válido.",1)}
-    else{codigo=c;msg("");dibujar(e.casillas);pintar(e);$("cEntrada").hidden=true}
+    if(!e.ok){msg(e.error||"No se pudo verificar.",1)}
+    else if(e.multiple){
+      msg("Tienes "+e.compras.length+" compras con giros. Elige una:");
+      e.compras.forEach((k,i)=>{const b=document.createElement("button");b.className="btn";b.style.marginTop="8px";
+        b.textContent="Compra "+(i+1)+" · números "+k.numeros+" · "+k.giros_restantes+(k.giros_restantes===1?" giro":" giros");
+        b.onclick=()=>{$("cod").value=k.codigo;entrar()};$("elige").appendChild(b)})}
+    else{codigo=e.codigo||c;msg("");dibujar(e.casillas);pintar(e);$("cEntrada").hidden=true}
   }catch(x){msg("No pudimos conectar. Revisa tu internet e intenta de nuevo.",1)}
   $("entrar").disabled=false;
 }

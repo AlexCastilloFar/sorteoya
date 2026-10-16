@@ -118,6 +118,9 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .bigs .prize{margin:0;min-height:260px}
 .bigs .prize.img img{height:210px}
 .bigs .prize strong{font-size:1rem;margin-top:6px}
+.nota{display:block;font-size:.72rem;font-weight:600;color:var(--mut);margin-top:3px;text-align:center}
+footer a{color:var(--gold);font-weight:700;text-decoration:underline}
+.flinks{margin:6px 0 10px}
 </style>
 </head>
 <body>
@@ -197,6 +200,7 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 
 <footer>
   <img src="logo.png" alt="SorteoYa"><br>
+  <div class="flinks"><a href="terminos.html">Términos y condiciones</a></div>
   © 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.
 </footer>
 <a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
@@ -235,9 +239,9 @@ function pintarCards(){
     const todos=[...(s.premios||[{n:s.premio,img:s.imagen}]),...(s.otros||[])];
     return `<div class="card">
       <div class="ch"><h3>${s.titulo}</h3><div class="price"><small>S/</small><b>${s.precio}</b><small>POR NÚMERO</small></div></div>
-      <div class="lbl" style="text-align:left;margin-top:12px">🎁 ${todos.length} PREMIOS · CADA PREMIO SE SORTEA POR SEPARADO</div>
-      <div class="bigs">${todos.map((p,k)=>`<div class="prize img"><span class="tag">🏆 ${k+1}° PREMIO</span><img src="${p.img}" alt=""><strong>${p.n}</strong></div>`).join("")}</div>
-      <div class="chips"><span class="chip">🎟️ 1 por S/ ${s.precio}</span><span class="chip">🎟️ ${s.packs}</span><span class="chip">Más boletos = más probabilidades</span></div>
+      <div class="lbl" style="text-align:left;margin-top:12px">🎁 ${todos.length} PREMIOS · ${todos.filter(p=>!p.tag).length} SE SORTEAN POR SEPARADO${todos.some(p=>p.tag)?" + PREMIO CONSUELO":""}</div>
+      <div class="bigs">${todos.map((p,k)=>`<div class="prize img"><span class="tag">🏆 ${k+1}° ${p.tag||"PREMIO"}</span><img src="${p.img}" alt=""><strong>${p.n}</strong>${p.nota?`<small class="nota">${p.nota}</small>`:""}</div>`).join("")}</div>
+      <div class="chips">${tarifas(s).map(x=>`<span class="chip">🎟️ ${x.cant} por S/ ${x.precio}</span>`).join("")}<span class="chip">Más boletos = más probabilidades</span></div>
       ${aviso(s,total-oc)}
       <div class="prog"><i style="width:${pct}%"></i></div>
       <div class="pt"><span>${oc} vendidos</span><span>${total-oc} disponibles</span></div>
@@ -254,7 +258,13 @@ function aviso(s,libres){
 function irNumeros(i){actual=i;pintarGrid();$("numeros").scrollIntoView({behavior:"smooth"})}
 
 let sel=new Set();
-const total=(s,n)=>s.packCant?Math.floor(n/s.packCant)*s.packPrecio+(n%s.packCant)*s.precio:n*s.precio;
+// Tarifas: usa el precio más barato combinando los paquetes (ej: 4 boletos = 3 por 25 + 1 por 12)
+function tarifas(s){return s.tarifas||[{cant:1,precio:s.precio},...(s.packCant?[{cant:s.packCant,precio:s.packPrecio}]:[])]}
+function total(s,n){
+  const t=tarifas(s),m=[0];
+  for(let i=1;i<=n;i++){m[i]=Infinity;t.forEach(x=>{if(i>=x.cant)m[i]=Math.min(m[i],m[i-x.cant]+x.precio)})}
+  return m[n];
+}
 
 function pintarGrid(){
   $("tabs").innerHTML=SORTEOS.map((s,i)=>`<button class="${i==actual?"on":""}" onclick="actual=${i};sel.clear();pintarGrid()">${s.titulo}</button>`).join("");

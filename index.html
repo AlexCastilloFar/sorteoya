@@ -134,15 +134,6 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 .bnav button{padding:11px 16px;border:0;border-radius:12px;background:var(--navy);color:var(--gold);font-weight:800;cursor:pointer}
 .bnav button:disabled{opacity:.35;cursor:default}
 @keyframes fl{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
-.lock{background:#eef1fb;border:2px dashed #b7c1e6;border-radius:14px;padding:16px;text-align:center;color:var(--navy);font-weight:600;line-height:1.5;font-size:.92rem}
-.lock b{display:block;font-size:1.05rem;margin-bottom:4px}
-.lock small{display:block;margin-top:8px;color:var(--mut);font-weight:700}
-.lhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;font-weight:800;color:var(--navy)}
-.lhead span{color:var(--mut);font-size:.85rem;font-weight:700}
-.lbox{max-height:460px;overflow:auto;border:2px solid #e4e8f5;border-radius:14px;padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:6px}
-.li{display:flex;gap:8px;align-items:center;background:var(--bg);border-radius:10px;padding:6px 10px;font-size:.9rem;font-weight:600;min-width:0}
-.li b{background:var(--navy);color:var(--gold);border-radius:8px;padding:2px 8px;min-width:36px;text-align:center;font-size:.85rem}
-.li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .lnk{display:inline-block;margin-top:10px;font-weight:700;font-size:.85rem;color:var(--navy2);text-decoration:underline}
 .dmodal{position:fixed;inset:0;background:#010f39d9;z-index:60;display:none;align-items:center;justify-content:center;padding:16px}
 .dmodal.on{display:flex}
@@ -154,6 +145,8 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 .dbox small{display:block;text-align:center;color:var(--mut);margin-top:12px;font-size:.78rem}
 .dbox small a{color:var(--navy2);font-weight:700}
 .flash{animation:fl .6s 3;outline:3px solid var(--navy);position:relative;z-index:2}
+.hbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.rbtn.alt{background:#ffffff1f;color:#fff;box-shadow:none;border:2px solid #ffffff59}
 .rbtn{display:inline-block;margin-top:14px;background:linear-gradient(90deg,var(--gold),var(--gold2));color:var(--navy);padding:10px 20px;border-radius:99px;font-weight:900;font-size:.95rem;box-shadow:0 4px 14px #0006}
 </style>
 </head>
@@ -168,7 +161,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 <div class="hero">
   <h1>Participa y <b>gana ya</b></h1>
   <p>Sorteos en vivo por nuestra página de Facebook · Mira tus números en tiempo real</p>
-  <a class="rbtn" href="ruleta.html">🎡 Ruleta de la suerte</a>
+  <div class="hbtns"><a class="rbtn" href="ruleta.html">🎡 Ruleta de la suerte</a><a class="rbtn alt" href="lista.html">📋 Lista oficial de participantes</a></div>
 </div>
 
 <main class="wrap">
@@ -203,14 +196,10 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
     <div class="panel">
       <input id="q" placeholder="Escribe tu nombre y apellido (ej: Alex Castillo)" autocomplete="off">
       <div class="res" id="res"></div>
-      <a class="lnk" href="#lista">📋 Ver la lista oficial de participantes</a>
+      <a class="lnk" href="lista.html">📋 Ver la lista oficial de participantes</a>
     </div>
   </section>
 
-  <section id="lista">
-    <div class="eyebrow">Transparencia total</div><h2>Lista oficial de <b>participantes</b></h2>
-    <div id="listas"></div>
-  </section>
 
   <section id="pago">
     <div class="eyebrow">Método de pago</div><h2>Paga en <b>segundos</b></h2>
@@ -245,7 +234,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 
 <footer>
   <img src="logo.png" alt="SorteoYa"><br>
-  <div class="flinks"><a href="terminos.html">Términos y condiciones</a> · <a href="ruleta.html">Ruleta de la suerte</a></div>
+  <div class="flinks"><a href="terminos.html">Términos y condiciones</a> · <a href="ruleta.html">Ruleta de la suerte</a> · <a href="lista.html">Lista oficial de participantes</a></div>
   © 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.
 </footer>
 <a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
@@ -289,46 +278,7 @@ async function cargar(){
     const r=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"t="+Date.now());
     filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[]}));
   }catch(e){}
-  pintarCards();pintarLista();pintarGrid();buscar();
-}
-
-// ===== Lista oficial de participantes =====
-// Se muestra sola cuando la dinámica se agota (todos los números vendidos) o cuando en config.js se pone mostrarLista:true.
-// Los nombres salen abreviados: "Alex Cas." (nombre + 3 letras del primer apellido).
-const PARTICULAS=new Set(["de","del","la","las","los","y","san","santa"]);
-function abreviar(nombre){
-  const t=nombre.trim().split(/\s+/).filter(Boolean);if(!t.length)return "";
-  const bon=w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();
-  const u=t.filter((x,i)=>i===0||!PARTICULAS.has(norm(x)));            // sin "de", "del", "la"...
-  const ap=u.length>=4?u[u.length-2]:(u[1]||"");                          // 4+ palabras: nombres compuestos + 2 apellidos → 1.er apellido
-  if(!ap)return bon(t[0]);
-  return bon(t[0])+" "+(ap.length<=3?bon(ap):bon(ap.slice(0,3))+".");
-}
-function pintarLista(){
-  const cont=$("listas");if(!cont)return;cont.innerHTML="";
-  SORTEOS.forEach(s=>{
-    const oc=ocupados(s),total=s.hasta-s.desde+1,agotada=oc.size>=total,abierta=agotada||s.mostrarLista===true;
-    const panel=document.createElement("div");panel.className="panel";panel.style.marginBottom="14px";
-    const h=document.createElement("div");h.className="lhead";
-    const t=document.createElement("div");t.textContent="📋 "+s.titulo;
-    const c=document.createElement("span");c.textContent=oc.size+" de "+total+" números vendidos";
-    h.append(t,c);panel.appendChild(h);
-    if(!abierta){
-      const k=document.createElement("div");k.className="lock";
-      k.innerHTML="<b>🔒 Lista aún no disponible</b>En este momento no se muestran los nombres. Se mostrarán al completar la venta de todos los boletos, o cuando el organizador decida publicarla.";
-      const sm=document.createElement("small");sm.textContent="Mientras tanto, busca tus números en \"Mis tickets\".";k.appendChild(sm);
-      panel.appendChild(k);
-    }else{
-      const box=document.createElement("div");box.className="lbox";
-      [...oc.entries()].sort((a,b)=>a[0]-b[0]).forEach(([n,nom])=>{
-        const d=document.createElement("div");d.className="li";
-        const b=document.createElement("b");b.textContent=pad(n,s);
-        const sp=document.createElement("span");sp.textContent=abreviar(nom);
-        d.append(b,sp);box.appendChild(d)});
-      panel.appendChild(box);
-    }
-    cont.appendChild(panel);
-  });
+  pintarCards();pintarGrid();buscar();
 }
 
 function pintarCards(){
@@ -567,7 +517,7 @@ $("irBtn").onclick=()=>irA($("ir").value);
 $("ir").addEventListener("keydown",e=>{if(e.key==="Enter")irA($("ir").value)});
 $("ir").addEventListener("input",()=>{$("irMsg").textContent=""});
 window.matchMedia("(min-width:768px)").addEventListener("change",pintarGrid);
-pintarGanadores();pintarCards();pintarLista();pintarGrid();cargar();if(PROMO){verificarPromo();setTimeout(()=>$("numeros").scrollIntoView(),300)}
+pintarGanadores();pintarCards();pintarGrid();cargar();if(PROMO){verificarPromo();setTimeout(()=>$("numeros").scrollIntoView(),300)}
 setInterval(cargar,60000);setInterval(tick,1000);
 </script>
 </body>

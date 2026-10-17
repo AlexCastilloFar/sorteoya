@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lista oficial de participantes – SorteoYa</title>
+<link rel="icon" href="logo.png">
+<style>
+:root{--navy:#010f39;--navy2:#0b1f66;--gold:#fdba0a;--gold2:#ff9d00;--bg:#f3f5fb;--txt:#0d1330;--mut:#667091;--ok:#12b76a;--bad:#e5484d}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45}
+a{color:inherit;text-decoration:none}
+header{background:var(--navy);box-shadow:0 2px 12px #0006}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;max-width:1000px;margin:auto}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800}.brand img{width:42px;height:42px;border-radius:10px}
+.back{background:var(--gold);color:var(--navy);padding:9px 16px;border-radius:99px;font-weight:800;font-size:.9rem}
+.hero{background:radial-gradient(circle at 70% 0,var(--navy2),var(--navy) 70%);color:#fff;text-align:center;padding:28px 16px 48px}
+.hero h1{font-size:clamp(1.7rem,6vw,2.6rem);font-weight:900}.hero h1 b{color:var(--gold)}.hero p{opacity:.85;margin-top:6px}
+main{max-width:1000px;margin:-26px auto 40px;padding:0 16px}
+.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 8px 30px #0b1f6622;margin-bottom:16px}
+.lhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-weight:900;font-size:1.1rem;color:var(--navy2)}
+.lhead span{color:var(--mut);font-size:.85rem;font-weight:700}
+.lock{background:#eef1fb;border:2px dashed #b7c1e6;border-radius:14px;padding:18px;text-align:center;color:var(--navy);font-weight:600;line-height:1.5;font-size:.95rem}
+.lock b{display:block;font-size:1.1rem;margin-bottom:4px}
+.lock small{display:block;margin-top:10px;color:var(--mut);font-weight:700}
+.lbox{border:2px solid #e4e8f5;border-radius:14px;padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px}
+.li{display:flex;gap:8px;align-items:center;background:var(--bg);border-radius:10px;padding:6px 10px;font-size:.92rem;font-weight:600;min-width:0}
+.li b{background:var(--navy);color:var(--gold);border-radius:8px;padding:2px 8px;min-width:36px;text-align:center;font-size:.85rem}
+.li span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nota{margin-top:12px;font-size:.8rem;color:var(--mut);text-align:center}
+.cta{display:inline-block;margin-top:12px;background:var(--navy);color:var(--gold);padding:10px 18px;border-radius:12px;font-weight:800;font-size:.9rem}
+footer{background:var(--navy);color:#ffffffb0;text-align:center;padding:26px 16px;font-size:.85rem}
+footer img{width:60px;border-radius:12px;margin-bottom:6px}footer a{color:var(--gold);font-weight:700;text-decoration:underline}
+</style>
+</head>
+<body>
+<header><div class="bar"><a class="brand" href="index.html"><img src="logo.png" alt="SorteoYa"><span>SorteoYa</span></a><a class="back" href="index.html">← Volver al inicio</a></div></header>
+<div class="hero"><h1>Lista oficial de <b>participantes</b></h1><p>Transparencia total antes del sorteo</p></div>
+<main><div id="listas"></div></main>
+<footer><img src="logo.png" alt="SorteoYa"><br><div style="margin:6px 0 10px"><a href="terminos.html">Términos y condiciones</a> · <a href="ruleta.html">Ruleta de la suerte</a> · <a href="index.html">Inicio</a></div>© 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.</footer>
+<script>document.write('<script src="config.js?v='+Date.now()+'"><\/script>')</script>
+<script>
+const $=id=>document.getElementById(id);
+const norm=s=>(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().trim();
+const pad=n=>String(n).padStart(2,"0");
+let filas=[];
+
+function parseCSV(t){const o=[];let r=[],c="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];
+  if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+  else if(ch=='"')q=true;else if(ch==','){r.push(c);c=""}
+  else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);o.push(r);r=[];c=""}else c+=ch}
+  if(c||r.length){r.push(c);o.push(r)}return o}
+
+function ocupados(s){const m=new Map();
+  filas.filter(f=>norm(f.dina).includes(norm(s.clave))).forEach(f=>f.nums.forEach(n=>m.set(n,f.nombre)));return m}
+
+// Nombres abreviados: "Alex Cas." (nombre + 3 letras del primer apellido). Nunca se muestra el DNI.
+const PARTICULAS=new Set(["de","del","la","las","los","y","san","santa"]);
+function abreviar(nombre){
+  const t=nombre.trim().split(/\s+/).filter(Boolean);if(!t.length)return "";
+  const bon=w=>w.charAt(0).toUpperCase()+w.slice(1).toLowerCase();
+  const u=t.filter((x,i)=>i===0||!PARTICULAS.has(norm(x)));            // sin "de", "del", "la"...
+  const ap=u.length>=4?u[u.length-2]:(u[1]||"");                          // 4+ palabras: nombres compuestos + 2 apellidos → 1.er apellido
+  if(!ap)return bon(t[0]);
+  return bon(t[0])+" "+(ap.length<=3?bon(ap):bon(ap.slice(0,3))+".");
+}
+
+// Se muestra sola cuando la dinámica se agota, o cuando en config.js se pone mostrarLista:true en esa dinámica.
+function pintarLista(){
+  const cont=$("listas");cont.innerHTML="";
+  SORTEOS.forEach(s=>{
+    const oc=ocupados(s),total=s.hasta-s.desde+1,abierta=oc.size>=total||s.mostrarLista===true;
+    const panel=document.createElement("div");panel.className="card";
+    const h=document.createElement("div");h.className="lhead";
+    const t=document.createElement("div");t.textContent="📋 "+s.titulo;
+    const c=document.createElement("span");c.textContent=oc.size+" de "+total+" números vendidos";
+    h.append(t,c);panel.appendChild(h);
+    if(!abierta){
+      const k=document.createElement("div");k.className="lock";
+      k.innerHTML="<b>🔒 Lista aún no disponible</b>En este momento no se muestran los nombres. Se mostrarán al completar la venta de todos los boletos, o cuando el organizador decida publicarla.";
+      const sm=document.createElement("small");sm.textContent="Mientras tanto, puedes ver tus números en \"Mis tickets\" de la página principal.";k.appendChild(sm);
+      const a=document.createElement("a");a.className="cta";a.href="index.html#tickets";a.textContent="Buscar mis números →";
+      const w=document.createElement("div");w.style.textAlign="center";w.append(a);k.appendChild(w);
+      panel.appendChild(k);
+    }else{
+      const box=document.createElement("div");box.className="lbox";
+      [...oc.entries()].sort((a,b)=>a[0]-b[0]).forEach(([n,nom])=>{
+        const d=document.createElement("div");d.className="li";
+        const b=document.createElement("b");b.textContent=pad(n);
+        const sp=document.createElement("span");sp.textContent=abreviar(nom);
+        d.append(b,sp);box.appendChild(d)});
+      panel.appendChild(box);
+      const nt=document.createElement("p");nt.className="nota";nt.textContent="Por privacidad, los nombres se muestran abreviados y nunca se publica el DNI. Esta lista se actualiza sola.";panel.appendChild(nt);
+    }
+    cont.appendChild(panel);
+  });
+}
+
+async function cargar(){
+  try{
+    const r=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"t="+Date.now());
+    filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[]}));
+  }catch(e){}
+  pintarLista();
+}
+pintarLista();cargar();setInterval(cargar,60000);
+</script>
+</body>
+</html>

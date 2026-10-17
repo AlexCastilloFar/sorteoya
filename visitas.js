@@ -5,6 +5,22 @@
 (function () {
   var ACTIVO = true;
   if (!ACTIVO) return;
+
+  // Dispositivos del dueño: no se cuentan.
+  //   Abrir sorteoya.me/?dueno=sy-alex  → este navegador deja de contarse (se guarda en el navegador).
+  //   Abrir sorteoya.me/?dueno=off      → vuelve a contarse.
+  try {
+    var dq = new URLSearchParams(location.search).get("dueno");
+    if (dq === "sy-alex") {
+      localStorage.setItem("sy_dueno", "1");
+      setTimeout(function () { alert("✅ Listo: las visitas desde este navegador ya no se cuentan."); }, 300);
+    } else if (dq === "off") {
+      localStorage.removeItem("sy_dueno");
+      setTimeout(function () { alert("Este navegador vuelve a contarse en las visitas."); }, 300);
+    }
+    if (localStorage.getItem("sy_dueno") === "1") return;
+  } catch (e) {}
+
   try {
     var API = (typeof RULETA_API !== "undefined" && RULETA_API) ||
       "https://script.google.com/macros/s/AKfycbzF2CeJKpISVyt2RWDocL05IxqWwb1yxEYAobQ1vxd8Y8O0xvWrVycs6o6ajaaiUcE/exec";

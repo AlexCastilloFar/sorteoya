@@ -38,7 +38,6 @@ const SORTEOS = [
       {n:"S/ 200 en efectivo", img:"premio-consuelo.png", tag:"PREMIO CONSUELO", nota:"Para quien compre más boletos y no haya ganado ningún premio"}
     ],
    mostrarLista:true, fechaSorteo:"", desde:1, hasta:600 } 
-   fechaSorteo:"", desde:1, hasta:600 }
 ];
 
 // Ganadores: foto = nombre del archivo subido junto a index.html

@@ -1,9 +1,9 @@
 // ============ CONTADOR DE VISITAS DE SORTEOYA ============
 // Guarda cada visita en la pestaña "Visitas" de la hoja de Google (vía el Apps Script).
 // No guarda datos personales: solo página, de dónde vino, celular/PC y un id anónimo al azar.
-// ACTIVO = false → no envía nada (se activa cuando el Apps Script ya tenga la acción "visita").
+// ACTIVO = true → registra visitas. Ponlo en false para apagar el contador.
 (function () {
-  var ACTIVO = false;
+  var ACTIVO = true;
   if (!ACTIVO) return;
   try {
     var API = (typeof RULETA_API !== "undefined" && RULETA_API) ||

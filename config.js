@@ -24,8 +24,8 @@ const SORTEOS = [
     tarifas:[{cant:1,precio:12},{cant:2,precio:20},{cant:3,precio:25}],
     premios:[
       {n:"Refrigeradora Miray 248 L / No frost", img:"refrigeradora.jpg"},
-      {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"},
-      {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"}
+      {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"},
+      {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
     ],
     otros:[
       {n:"S/ 500 en efectivo", img:"premio-500.png"},

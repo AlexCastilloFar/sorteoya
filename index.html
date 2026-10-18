@@ -135,6 +135,16 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .bigs .prize{margin:0;min-height:260px}
 .bigs .prize.img img{height:210px}
 .bigs .prize strong{font-size:1rem;margin-top:6px}
+@media(min-width:700px){
+.bigs{display:flex;flex-wrap:wrap;justify-content:center;gap:16px}
+.bigs .prize{flex:0 0 calc((100% - 32px)/3);min-height:350px;padding:20px 16px}
+.bigs .prize.img img{height:250px}
+.bigs .prize strong{font-size:1.1rem;margin-top:10px}
+.bigs .prize .tag{font-size:.78rem;padding:5px 12px}
+.bigs .prize:nth-child(-n+3){min-height:450px;padding:24px 4px 20px}
+.bigs .prize:nth-child(-n+3).img img{height:330px}
+.bigs .prize:nth-child(-n+3) strong{padding:0 14px}
+}
 .nota{display:block;font-size:.72rem;font-weight:600;color:var(--mut);margin-top:3px;text-align:center}
 footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 .flinks{margin:6px 0 10px}
@@ -169,7 +179,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 </head>
 <body>
 <header><div class="bar">
-  <a class="brand" href="#sorteos"><img src="logo.png" alt="SorteoYa"><span>SorteoYa</span></a>
+  <a class="brand" href="#sorteos"><img src="logo.png" alt="SorteoYa"><span>Sorteo<b style="color:#fdba0a">Ya</b></span></a>
   <nav>
     <a href="#sorteos" class="on">Sorteos</a><a href="#numeros">Números</a><a href="#tickets">Mis tickets</a><a href="#ganadores">Ganadores</a><a id="soporte" class="wsp" target="_blank" rel="noopener">Soporte</a>
   </nav>

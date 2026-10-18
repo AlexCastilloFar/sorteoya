@@ -24,13 +24,10 @@ const SORTEOS = [
     tarifas:[{cant:1,precio:12},{cant:2,precio:20},{cant:3,precio:25}],
     premios:[
       {n:"Refrigeradora Miray 248 L / No frost", img:"refrigeradora.jpg"},
-      {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"},
-      {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
+      {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"},
+      {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"}
     ],
     otros:[
-      {n:"Licuadora Práctika BL-600", img:"licuadora.jpg"},
-      {n:"Olla arrocera Pom 1K II", img:"arrocera.jpg"},
-      {n:"Hervidor + Cafetera", img:"hervidor-cafetera.jpg"},
       {n:"S/ 500 en efectivo", img:"premio-500.png"},
       {n:"S/ 300 en efectivo", img:"premio-300.png"},
       {n:"S/ 200 en efectivo", img:"premio-200.png"},

@@ -23,7 +23,7 @@ const SORTEOS = [
   { clave:"electro", titulo:"Dinámica Electro", precio:12,
     tarifas:[{cant:1,precio:12},{cant:2,precio:20},{cant:3,precio:25}],
     premios:[
-      {n:"Refrigeradora Electrolux 138L", img:"refrigeradora.jpg"},
+      {n:"Refrigeradora Miray 248 L / No frost", img:"refrigeradora.jpg"},
       {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"},
       {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
     ],

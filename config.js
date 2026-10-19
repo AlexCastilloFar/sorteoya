@@ -48,7 +48,7 @@ const GANADORES = [
 // Escribe el nombre como quieras que se vea (ej: "Alex Castillo"). Para agregar una dinámica nueva, copia un bloque.
 const LISTA_GANADORES = [
   { dinamica:"Dinámica de S/ 1,100", fecha:"", ganadores:[
-      {premio:"Premio 1 · S/ 500",  nombre:"Mireya Zeña",     boleto:"228"},
+      {premio:"Premio 1 · S/ 500",  nombre:"Mireya Zeña",     boleto:"228", video:"https://youtube.com/shorts/oapY0OdFeNU"},
       {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:"245", video:"https://youtube.com/shorts/Mt8PZ-diTxM"},
       {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"260", video:"https://youtube.com/shorts/7RWRBFht2Ao"},
       {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:"248", video:"https://youtube.com/shorts/-hYiidivHmw"},

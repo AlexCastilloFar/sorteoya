@@ -188,7 +188,6 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 .avs-x:hover{background:#dfe5f7}
 .avs-box h3{font-size:1.35rem;font-weight:900;color:var(--navy);margin:6px 24px 8px}
 .avs-box p{color:var(--txt);font-size:.98rem;line-height:1.45}
-.avs-n{display:inline-block;margin:12px 0 4px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font-weight:900;border-radius:14px;padding:8px 18px;font-size:1.05rem}
 .avs-b{display:block;width:100%;margin-top:14px;padding:13px;border:0;border-radius:14px;font-weight:900;font-size:1rem;cursor:pointer;background:var(--navy);color:var(--gold)}
 </style>
 </head>
@@ -326,7 +325,7 @@ async function cargar(){
 }
 
 // Aviso de bienvenida: sale una sola vez por persona (al cerrarlo ya no vuelve a aparecer).
-// Muestra el número real de boletos libres; si no se pudo leer la hoja, no muestra la cantidad.
+// Es solo un aviso informativo: no muestra cuántos quedan ni lleva a ninguna parte.
 function avisoInicial(){
   const KEY="sy_aviso600";
   try{if(localStorage.getItem(KEY))return}catch(e){}
@@ -334,16 +333,14 @@ function avisoInicial(){
   const s=SORTEOS[0],total=s.hasta-s.desde+1,libres=total-ocupados(s).size;
   if(leido&&libres<=0)return;                       // agotado: no hace falta
   $("avsT").textContent="🎟️ Solo "+total+" boletos en total";
-  if(leido){$("avsN").textContent="Quedan "+libres+" disponibles";$("avsN").hidden=false}
-  const cerrar=ir=>{
+  const cerrar=()=>{
     $("avs").classList.remove("on");
     try{localStorage.setItem(KEY,"1")}catch(e){}
-    if(ir)$("numeros").scrollIntoView({behavior:"smooth"});
   };
-  $("avsX").onclick=()=>cerrar(false);
-  $("avsGo").onclick=()=>cerrar(true);
-  $("avs").onclick=e=>{if(e.target.id==="avs")cerrar(false)};
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("avs").classList.contains("on"))cerrar(false)});
+  $("avsX").onclick=cerrar;
+  $("avsGo").onclick=cerrar;
+  $("avs").onclick=e=>{if(e.target.id==="avs")cerrar()};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("avs").classList.contains("on"))cerrar()});
   $("avs").classList.add("on");
 }
 
@@ -599,9 +596,8 @@ setInterval(cargar,60000);setInterval(tick,1000);
   <div class="avs-box">
     <button class="avs-x" id="avsX" aria-label="Cerrar">×</button>
     <h3 id="avsT">🎟️ Solo 600 boletos en total</h3>
-    <p>Con tan pocos boletos, <b>tus probabilidades de ganar son más altas</b>. Y mientras más boletos tengas, ¡más oportunidades!</p>
-    <div class="avs-n" id="avsN" hidden></div>
-    <button class="avs-b" id="avsGo">Ver números</button>
+    <p>Mucho menos que en sorteos de miles de números. Con tan pocos boletos, <b>tus probabilidades de ganar son más altas</b>. Y mientras más boletos tengas, ¡más oportunidades!</p>
+    <button class="avs-b" id="avsGo">Entendido</button>
   </div>
 </div>
 </body>

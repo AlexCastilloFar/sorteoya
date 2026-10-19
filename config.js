@@ -49,10 +49,10 @@ const LISTA_GANADORES = [
   { dinamica:"Dinámica de S/ 1,100", fecha:"", ganadores:[
       {premio:"Premio 1 · S/ 500",  nombre:"Mireya Zeña",     boleto:"228"},
       {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:"245"},
-      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"248"},
-      {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:""},
-      {premio:"Premio consuelo · S/ 20", nombre:"Mercedes Farfan", boleto:""},
-      {premio:"Premio consuelo · S/ 20", nombre:"Gabriela Chavez", boleto:""},
-      {premio:"Premio consuelo · S/ 20", nombre:"Yasmin Silva",    boleto:""}
+      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"260"},
+      {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:"248"},
+      {premio:"Premio en vivo · S/ 20", nombre:"Mercedes Farfan", boleto:"En vivo"},
+      {premio:"Premio en vivo · S/ 20", nombre:"Gabriela Chavez", boleto:"En vivo"},
+      {premio:"Premio en vivo · S/ 20", nombre:"Yasmin Silva",    boleto:"En vivo"}
   ]}
 ];

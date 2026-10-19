@@ -20,7 +20,7 @@ const PAGO = {
 // fechaSorteo: cuando se agoten los números, escribe aquí el día y la hora
 // Cada línea de premios termina en coma, menos la última de cada lista.
 const SORTEOS = [
-  { clave:"electro", titulo:"Dinámica Electro", precio:12,
+  { clave:"electro", titulo:"Dinámica ElectroEfectivo", precio:12,
     tarifas:[{cant:1,precio:12},{cant:2,precio:20},{cant:3,precio:25}],
     premios:[
       {n:"Refrigeradora 248 L No frost", img:"refrigeradora.jpg"},
@@ -51,8 +51,8 @@ const LISTA_GANADORES = [
       {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:"245"},
       {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"260"},
       {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:"248"},
-      {premio:"Premio en vivo · S/ 20", nombre:"Mercedes Farfan", boleto:"En vivo"},
-      {premio:"Premio en vivo · S/ 20", nombre:"Gabriela Chavez", boleto:"En vivo"},
-      {premio:"Premio en vivo · S/ 20", nombre:"Yasmin Silva",    boleto:"En vivo"}
+      {premio:"Premio a la fidelidad · S/ 20", nombre:"Mercedes Farfan", boleto:"En vivo"},
+      {premio:"Premio a la fidelidad · S/ 20", nombre:"Gabriela Chavez", boleto:"En vivo"},
+      {premio:"Premio a la fidelidad · S/ 20", nombre:"Yasmin Silva",    boleto:"En vivo"}
   ]}
 ];

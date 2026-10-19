@@ -44,12 +44,12 @@ const GANADORES = [
 
 // Lista completa de ganadores (página "Ver todos los ganadores").
 // Cada dinámica es un bloque; cada ganador: premio, nombre y boleto (boleto:"" si aún no lo tienes).
-// Escribe el nombre como quieras que se vea (ej: "Mareya Zeña"). Para agregar una dinámica nueva, copia un bloque.
+// Escribe el nombre como quieras que se vea (ej: "Alex Castillo"). Para agregar una dinámica nueva, copia un bloque.
 const LISTA_GANADORES = [
   { dinamica:"Dinámica de S/ 1,100", fecha:"", ganadores:[
-      {premio:"Premio 1 · S/ 500",  nombre:"Mareya Zeña",     boleto:""},
-      {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:""},
-      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:""},
+      {premio:"Premio 1 · S/ 500",  nombre:"Mireya Zeña",     boleto:"228"},
+      {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:"245"},
+      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"248"},
       {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:""},
       {premio:"Premio consuelo · S/ 20", nombre:"Mercedes Farfan", boleto:""},
       {premio:"Premio consuelo · S/ 20", nombre:"Gabriela Chavez", boleto:""},

@@ -180,6 +180,16 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 .hbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .rbtn.alt{background:#ffffff1f;color:#fff;box-shadow:none;border:2px solid #ffffff59}
 .rbtn{display:inline-block;margin-top:14px;background:linear-gradient(90deg,var(--gold),var(--gold2));color:var(--navy);padding:10px 20px;border-radius:99px;font-weight:900;font-size:.95rem;box-shadow:0 4px 14px #0006}
+.avs{position:fixed;inset:0;background:#010f39b3;z-index:70;display:none;align-items:center;justify-content:center;padding:16px}
+.avs.on{display:flex}
+.avs-box{position:relative;background:#fff;border-radius:22px;padding:26px 22px 22px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 60px #0009;border-top:6px solid var(--gold);animation:avsin .35s ease-out}
+@keyframes avsin{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.avs-x{position:absolute;top:8px;right:10px;width:38px;height:38px;border:0;border-radius:50%;background:#eef1fb;color:var(--navy);font-size:1.5rem;line-height:1;font-weight:700;cursor:pointer}
+.avs-x:hover{background:#dfe5f7}
+.avs-box h3{font-size:1.35rem;font-weight:900;color:var(--navy);margin:6px 24px 8px}
+.avs-box p{color:var(--txt);font-size:.98rem;line-height:1.45}
+.avs-n{display:inline-block;margin:12px 0 4px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font-weight:900;border-radius:14px;padding:8px 18px;font-size:1.05rem}
+.avs-b{display:block;width:100%;margin-top:14px;padding:13px;border:0;border-radius:14px;font-weight:900;font-size:1rem;cursor:pointer;background:var(--navy);color:var(--gold)}
 </style>
 </head>
 <body>
@@ -305,12 +315,36 @@ const filasDe=s=>filas.filter(f=>norm(f.dina).includes(norm(s.clave)));
 function ocupados(s){const m=new Map();filasDe(s).forEach(f=>f.nums.forEach(n=>m.set(n,f.nombre)));return m}
 const pad=(n,s)=>String(n).padStart(2,"0");
 
+let leido=false;
 async function cargar(){
   try{
     const r=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"t="+Date.now());
     filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[]}));
+    leido=true;
   }catch(e){}
-  pintarHero();pintarCards();pintarGrid();buscar();
+  pintarHero();pintarCards();pintarGrid();buscar();avisoInicial();
+}
+
+// Aviso de bienvenida: sale una sola vez por persona (al cerrarlo ya no vuelve a aparecer).
+// Muestra el número real de boletos libres; si no se pudo leer la hoja, no muestra la cantidad.
+function avisoInicial(){
+  const KEY="sy_aviso600";
+  try{if(localStorage.getItem(KEY))return}catch(e){}
+  if(PROMO||document.getElementById("avs").classList.contains("on"))return;
+  const s=SORTEOS[0],total=s.hasta-s.desde+1,libres=total-ocupados(s).size;
+  if(leido&&libres<=0)return;                       // agotado: no hace falta
+  $("avsT").textContent="🎟️ Solo "+total+" boletos en total";
+  if(leido){$("avsN").textContent="Quedan "+libres+" disponibles";$("avsN").hidden=false}
+  const cerrar=ir=>{
+    $("avs").classList.remove("on");
+    try{localStorage.setItem(KEY,"1")}catch(e){}
+    if(ir)$("numeros").scrollIntoView({behavior:"smooth"});
+  };
+  $("avsX").onclick=()=>cerrar(false);
+  $("avsGo").onclick=()=>cerrar(true);
+  $("avs").onclick=e=>{if(e.target.id==="avs")cerrar(false)};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("avs").classList.contains("on"))cerrar(false)});
+  $("avs").classList.add("on");
 }
 
 // Arriba solo va la ruleta. Cuando se agotan todos los números, la ruleta se quita y aparece la lista oficial.
@@ -561,5 +595,14 @@ pintarGanadores();pintarCards();pintarGrid();cargar();if(PROMO){verificarPromo()
 setInterval(cargar,60000);setInterval(tick,1000);
 </script>
 <script src="visitas.js"></script>
+<div class="avs" id="avs" role="dialog" aria-modal="true" aria-labelledby="avsT">
+  <div class="avs-box">
+    <button class="avs-x" id="avsX" aria-label="Cerrar">×</button>
+    <h3 id="avsT">🎟️ Solo 600 boletos en total</h3>
+    <p>Con tan pocos boletos, <b>tus probabilidades de ganar son más altas</b>. Y mientras más boletos tengas, ¡más oportunidades!</p>
+    <div class="avs-n" id="avsN" hidden></div>
+    <button class="avs-b" id="avsGo">Ver números</button>
+  </div>
+</div>
 </body>
 </html>

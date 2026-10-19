@@ -109,8 +109,8 @@ input:focus{outline:0;border-color:var(--gold2)}
 .pay button{margin-top:10px;padding:10px 18px;border:0;border-radius:12px;font-weight:800;cursor:pointer;background:var(--gold);color:var(--navy)}
 /* Ganadores */
 .gal{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
-.gal figure{flex:0 0 min(280px,80%);scroll-snap-align:start;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px #0b1f6620}
-.gal img{width:100%;height:200px;object-fit:cover;display:block}
+.gal figure{flex:0 0 min(400px,88%);scroll-snap-align:start;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px #0b1f6620}
+.gal img{width:100%;aspect-ratio:16/9;height:auto;object-fit:cover;display:block}
 .gal figcaption{padding:10px;font-weight:700;font-size:.9rem}
 .vtg{display:block;max-width:360px;margin:16px auto 0;text-align:center;background:var(--navy);color:var(--gold);padding:13px 18px;border-radius:14px;font-weight:800}
 .ganador{background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;border-left:5px solid var(--gold);font-weight:600}
@@ -574,7 +574,7 @@ function pintarGanadores(){
   if(!GANADORES.length){l.innerHTML='<p class="mut" style="text-align:center">Pronto publicaremos a nuestros ganadores 🏆</p>';return}
   GANADORES.forEach(x=>{
     if(x.foto){const f=document.createElement("figure"),i=document.createElement("img"),c=document.createElement("figcaption");
-      i.src=x.foto;i.alt=x.titulo;i.loading="lazy";c.textContent=x.nombre?`${x.titulo} · ${x.nombre}`:x.titulo;f.append(i,c);g.appendChild(f)}
+      i.src=x.foto;i.alt=x.titulo;i.loading="lazy";c.textContent=x.nombre?`${x.titulo} · ${x.nombre}`:x.titulo;const a=document.createElement("a");a.href="ganadores.html";a.title="Ver todos los ganadores";a.append(i);f.append(a,c);g.appendChild(f)}
     else{const d=document.createElement("div");d.className="ganador";d.textContent=`🏆 ${x.titulo} · ${x.nombre}`;l.appendChild(d)}})}
 
 if(typeof LIVE_FACEBOOK==="string"&&/^https:\/\/(www\.|m\.|web\.)?(facebook\.com|fb\.watch)\//.test(LIVE_FACEBOOK.trim())){

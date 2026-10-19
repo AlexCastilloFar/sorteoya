@@ -39,7 +39,8 @@ const SORTEOS = [
 
 // Ganadores: foto = nombre del archivo subido junto a index.html
 const GANADORES = [
-  {titulo:"Dinámica de S/ 1,100 · ¡Premios entregados!", nombre:"", foto:"ganadores-1100-portada.jpg"},
+  {titulo:"Ganadores de la dinámica de S/ 1,100", nombre:"", foto:"portada-1100.jpg"},
+  {titulo:"Ganadores del Premio a la fidelidad", nombre:"", foto:"portada-fidelidad.jpg"},
 ];
 
 // Lista completa de ganadores (página "Ver todos los ganadores").

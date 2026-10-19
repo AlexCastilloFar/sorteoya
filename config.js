@@ -28,11 +28,11 @@ const SORTEOS = [
       {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
     ],
     otros:[
-      {n:"S/ 500 en efectivo", img:"premio-500.png"},
-      {n:"S/ 300 en efectivo", img:"premio-300.png"},
-      {n:"S/ 200 en efectivo", img:"premio-200.png"},
-      {n:"S/ 150 en efectivo", img:"premio-150.png"},
-      {n:"S/ 200 en efectivo", img:"premio-consuelo.png", tag:"PREMIO CONSUELO", nota:"Para quien compre más boletos y no haya ganado ningún premio"}
+      {n:"S/ 500 en efectivo", img:"premio-500.jpg"},
+      {n:"S/ 300 en efectivo", img:"premio-300.jpg"},
+      {n:"S/ 200 en efectivo", img:"premio-200.jpg"},
+      {n:"S/ 150 en efectivo", img:"premio-150.jpg"},
+      {n:"S/ 200 en efectivo", img:"premio-consuelo.jpg", tag:"PREMIO CONSUELO", nota:"Para quien compre más boletos y no haya ganado ningún premio"}
     ],
    mostrarLista:false, fechaSorteo:"", desde:1, hasta:600 } 
 ];

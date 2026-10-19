@@ -360,7 +360,7 @@ function pintarCards(){
     return `<div class="card">
       <div class="ch"><h3>${s.titulo}</h3><div class="price"><small>S/</small><b>${s.precio}</b><small>POR NÚMERO</small></div></div>
       <div class="lbl" style="text-align:left;margin-top:12px">🎁 ${todos.length} PREMIOS · ${todos.filter(p=>!p.tag).length} SE SORTEAN POR SEPARADO${todos.some(p=>p.tag)?" + PREMIO CONSUELO":""}</div>
-      <div class="bigs">${todos.map((p,k)=>`<div class="prize img"><span class="tag">🏆 ${k+1}° ${p.tag||"PREMIO"}</span><img src="${p.img}" alt=""><strong>${p.n}</strong>${p.nota?`<small class="nota">${p.nota}</small>`:""}</div>`).join("")}</div>
+      <div class="bigs">${todos.map((p,k)=>`<div class="prize img"><span class="tag">🏆 ${k+1}° ${p.tag||"PREMIO"}</span><img src="${p.img}" alt="${p.n.replace(/"/g,"&quot;")}"${k>=3?' loading="lazy" decoding="async"':""}><strong>${p.n}</strong>${p.nota?`<small class="nota">${p.nota}</small>`:""}</div>`).join("")}</div>
       <div class="chips">${tarifas(s).map(x=>`<span class="chip">🎟️ ${x.cant} por S/ ${x.precio}</span>`).join("")}<span class="chip">Más boletos = más probabilidades</span></div>
       ${aviso(s,total-oc)}
       <div class="prog"><i style="width:${pct}%"></i></div>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Todos los ganadores – SorteoYa</title>
+<link rel="icon" href="logo.png">
+<!-- SEO -->
+<meta name="description" content="Todos los ganadores de las dinámicas de SorteoYa con su premio y número de boleto.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://sorteoya.me/ganadores.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SorteoYa">
+<meta property="og:locale" content="es_PE">
+<meta property="og:title" content="Todos los ganadores – SorteoYa">
+<meta property="og:description" content="Todos los ganadores de las dinámicas de SorteoYa con su premio y número de boleto.">
+<meta property="og:url" content="https://sorteoya.me/ganadores.html">
+<meta property="og:image" content="https://sorteoya.me/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Todos los ganadores – SorteoYa">
+<meta name="twitter:description" content="Todos los ganadores de las dinámicas de SorteoYa con su premio y número de boleto.">
+<meta name="twitter:image" content="https://sorteoya.me/logo.png">
+<!-- /SEO -->
+<style>
+:root{--navy:#010f39;--navy2:#0b1f66;--gold:#fdba0a;--gold2:#ff9d00;--bg:#f3f5fb;--txt:#0d1330;--mut:#667091}
+*{box-sizing:border-box;margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45}
+a{color:inherit;text-decoration:none}
+header{background:var(--navy);box-shadow:0 2px 12px #0006}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 16px;max-width:1000px;margin:auto}
+.brand{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800}.brand img{width:42px;height:42px;border-radius:10px}
+.back{background:var(--gold);color:var(--navy);padding:9px 16px;border-radius:99px;font-weight:800;font-size:.9rem}
+.hero{background:radial-gradient(circle at 70% 0,var(--navy2),var(--navy) 70%);color:#fff;text-align:center;padding:28px 16px 48px}
+.hero h1{font-size:clamp(1.7rem,6vw,2.6rem);font-weight:900}.hero h1 b{color:var(--gold)}.hero p{opacity:.85;margin-top:6px}
+main{max-width:1000px;margin:-26px auto 40px;padding:0 16px}
+.card{background:#fff;border-radius:22px;padding:20px;box-shadow:0 8px 30px #0b1f6622;margin-bottom:16px}
+.buscar{width:100%;padding:13px 16px;border:2px solid #e4e8f5;border-radius:14px;font-size:1rem;font-family:inherit;margin-bottom:16px;background:#fff}
+.buscar:focus{outline:none;border-color:var(--navy2)}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-weight:900;font-size:1.1rem;color:var(--navy2)}
+.dh span{color:var(--mut);font-size:.85rem;font-weight:700}
+.fila{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.3fr) auto;gap:10px;align-items:center;background:var(--bg);border-radius:12px;padding:10px 12px;margin-bottom:6px;font-weight:600;font-size:.95rem}
+.fila.th{background:none;color:var(--mut);font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:0 12px;margin-bottom:4px}
+.fila .pr{color:var(--navy2);font-weight:800}
+.fila .nm{font-weight:800;overflow-wrap:anywhere}
+.tk{background:var(--navy);color:var(--gold);border-radius:8px;padding:3px 10px;min-width:44px;text-align:center;font-size:.85rem;font-weight:800}
+.tk.sin{background:#e4e8f5;color:var(--mut)}
+.vacio{text-align:center;color:var(--mut);font-weight:600;padding:10px 0}
+.nota{margin-top:12px;font-size:.8rem;color:var(--mut);text-align:center}
+@media(max-width:520px){.fila{grid-template-columns:1fr auto;gap:4px 10px}.fila.th{display:none}.fila .pr{grid-column:1/-1;font-size:.8rem}}
+footer{background:var(--navy);color:#ffffffb0;text-align:center;padding:26px 16px;font-size:.85rem}
+footer img{width:60px;border-radius:12px;margin-bottom:6px}footer a{color:var(--gold);font-weight:700;text-decoration:underline}
+</style>
+</head>
+<body>
+<header><div class="bar"><a class="brand" href="index.html"><img src="logo.png" alt="SorteoYa"><span>Sorteo<b style="color:#fdba0a">Ya</b></span></a><a class="back" href="index.html#ganadores">← Volver al inicio</a></div></header>
+<div class="hero"><h1>Todos los <b>ganadores</b> 🏆</h1><p>Premio, nombre y número de boleto de cada dinámica</p></div>
+<main>
+  <input class="buscar" id="q" type="search" placeholder="Buscar por nombre (ej: Mareya)" autocomplete="off">
+  <div id="listas"></div>
+</main>
+<footer><img src="logo.png" alt="SorteoYa"><br><div style="margin:6px 0 10px"><a href="terminos.html">Términos y condiciones</a> · <a href="ruleta.html">Ruleta de la suerte</a> · <a href="index.html">Inicio</a></div>© 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.</footer>
+<script>document.write('<script src="config.js?v='+Date.now()+'"><\/script>')</script>
+<script>
+const $=id=>document.getElementById(id);
+const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad=n=>String(n).padStart(2,"0");
+
+function pintar(){
+  const q=norm($("q").value),cont=$("listas");let hay=0;
+  const lista=(typeof LISTA_GANADORES!=="undefined"&&LISTA_GANADORES)||[];
+  const html=lista.map(d=>{
+    const gs=(d.ganadores||[]).filter(g=>!q||norm(g.nombre).includes(q));
+    if(!gs.length)return "";hay+=gs.length;
+    const filas=gs.map(g=>{
+      const b=String(g.boleto||"").trim();
+      const tk=b?`<span class="tk">N° ${esc(/^\d+$/.test(b)?pad(b):b)}</span>`:`<span class="tk sin">—</span>`;
+      return `<div class="fila"><span class="pr">${esc(g.premio)}</span><span class="nm">${esc(g.nombre)}</span>${tk}</div>`}).join("");
+    return `<div class="card"><div class="dh"><div>🏆 ${esc(d.dinamica)}</div><span>${esc(d.fecha||"")}</span></div>
+      <div class="fila th"><span>Premio</span><span>Ganador</span><span>Boleto</span></div>${filas}</div>`}).join("");
+  cont.innerHTML=html||`<div class="card"><p class="vacio">${q?"No encontramos ese nombre entre los ganadores.":"Pronto publicaremos a nuestros ganadores 🏆"}</p></div>`;
+  if(hay)cont.insertAdjacentHTML("beforeend",'<p class="nota">Los ganadores se publican con el nombre que nos autorizan. Nunca se muestra el DNI.</p>');
+}
+$("q").addEventListener("input",pintar);
+pintar();
+</script>
+<script src="visitas.js"></script>
+</body>
+</html>

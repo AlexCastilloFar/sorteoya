@@ -23,9 +23,9 @@ const SORTEOS = [
   { clave:"electro", titulo:"Dinámica Electro", precio:12,
     tarifas:[{cant:1,precio:12},{cant:2,precio:20},{cant:3,precio:25}],
     premios:[
-      {n:"Refrigeradora Miray 248 L / No frost", img:"refrigeradora.jpg"},
-      {n:"Cocina a gas Mabe 4 hornillas con horno", img:"cocina.jpg"},
-      {n:'TV JVC 43" QLED Smart TV', img:"tv.jpg"}
+      {n:"Refrigeradora 248 L No frost", img:"refrigeradora.jpg"},
+      {n:"Cocina a gas 4 hornillas con horno", img:"cocina.jpg"},
+      {n:'TV 43" QLED Smart TV', img:"tv.jpg"}
     ],
     otros:[
       {n:"S/ 500 en efectivo", img:"premio-500.jpg"},
@@ -40,4 +40,19 @@ const SORTEOS = [
 // Ganadores: foto = nombre del archivo subido junto a index.html
 const GANADORES = [
   {titulo:"Dinámica de S/ 1,100 · ¡Premios entregados!", nombre:"", foto:"ganadores-1100.jpg"},
+];
+
+// Lista completa de ganadores (página "Ver todos los ganadores").
+// Cada dinámica es un bloque; cada ganador: premio, nombre y boleto (boleto:"" si aún no lo tienes).
+// Escribe el nombre como quieras que se vea (ej: "Mareya Zeña"). Para agregar una dinámica nueva, copia un bloque.
+const LISTA_GANADORES = [
+  { dinamica:"Dinámica de S/ 1,100", fecha:"", ganadores:[
+      {premio:"Premio 1 · S/ 500",  nombre:"Mareya Zeña",     boleto:""},
+      {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:""},
+      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:""},
+      {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:""},
+      {premio:"Premio consuelo · S/ 20", nombre:"Mercedes Farfan", boleto:""},
+      {premio:"Premio consuelo · S/ 20", nombre:"Gabriela Chavez", boleto:""},
+      {premio:"Premio consuelo · S/ 20", nombre:"Yasmin Silva",    boleto:""}
+  ]}
 ];

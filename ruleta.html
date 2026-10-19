@@ -43,7 +43,7 @@ input:focus{outline:0;border-color:var(--gold2)}
 .top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .pill{background:var(--navy);color:var(--gold);font-weight:900;padding:6px 14px;border-radius:99px;font-size:.9rem}
 .rw{position:relative;width:min(88vw,380px);margin:22px auto 8px}
-#rueda{width:100%;display:block;transition:transform 4.6s cubic-bezier(.12,.7,.1,1);filter:drop-shadow(0 6px 14px #0b1f6655)}
+#rueda{width:100%;display:block;will-change:transform;filter:drop-shadow(0 6px 14px #0b1f6655)}
 .ptr{position:absolute;left:50%;top:-14px;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:32px solid var(--gold);filter:drop-shadow(0 2px 3px #0008);z-index:2}
 .res{margin-top:14px;padding:14px;border-radius:14px;background:#fdba0a22;text-align:center;font-weight:800;font-size:1.05rem}
 .prob{font-size:.78rem;color:var(--mut);text-align:center;margin-top:10px}
@@ -87,7 +87,7 @@ const $=id=>document.getElementById(id);
 const COL={SUERTE:["#0b1f66","#16308a"],GIRO:["#fdba0a"],DESCUENTO:["#12b76a"],TICKET:["#8a2be2"]};
 const TXT={SUERTE:"SUERTE",GIRO:"+1 GIRO",DESCUENTO:"S/5 DSCTO",TICKET:"+1 BOLETO"};
 const ICONO={SUERTE:"😅",GIRO:"🎉",DESCUENTO:"💸",TICKET:"🎟️"};
-let codigo="",est=null,rot=0,girando=false;
+let codigo="",est=null,girando=false;
 
 // Comunicación con el servidor (JSONP: no depende de CORS)
 function jsonp(accion,cod){return new Promise((ok,fail)=>{
@@ -152,31 +152,58 @@ async function entrar(){
 }
 function msg(t,err){const m=$("msg");m.textContent=t;m.className="msg"+(err?" err":"")}
 
-function destino(i,n){
-  const a=360/n,centro=(i+.5)*a+(Math.random()-.5)*a*.6;
-  const obj=((360-centro)%360+360)%360,base=((rot%360)+360)%360;
-  rot=rot+360*4+((obj-base+360)%360);return rot}
+// ---- Giro de la ruleta: siempre hacia la derecha (horario) ----
+// 1) Al tocar GIRAR acelera suave hasta una velocidad alta y constante (mientras el servidor responde).
+// 2) Con el resultado, frena de forma continua (sin saltos) hasta detenerse en la casilla indicada.
+// La velocidad máxima se limita para que en pantalla nunca parezca que gira al revés.
+const VMAX=400, ACEL=VMAX/0.7;   // grados por segundo · tiempo de arranque 0,7 s
+let ang=0;                        // ángulo acumulado (solo aumenta)
+const pinta=()=>{$("rueda").style.transform="rotate("+ang+"deg)"};
+const espera=ms=>new Promise(r=>setTimeout(r,ms));
 
-function anguloActual(){
-  try{const m=getComputedStyle($("rueda")).transform;
-    if(m&&m!=="none"){const v=m.match(/matrix\(([^)]+)\)/);if(v){const q=v[1].split(",").map(Number);return(Math.atan2(q[1],q[0])*180/Math.PI+360)%360}}}catch(x){}
-  return ((rot%360)+360)%360;
+// Frena desde VMAX recorriendo "dist" grados (desaceleración constante) y devuelve cuando se detuvo
+function frenar(dist){return new Promise(fin=>{
+  const a0=ang,D=2*dist/VMAX,t0=performance.now();
+  (function paso(ahora){
+    const s=Math.min(1,(ahora-t0)/1000/D);
+    ang=a0+dist*(1-(1-s)*(1-s));pinta();
+    if(s<1)requestAnimationFrame(paso);else fin();
+  })(t0);
+})}
+
+// Grados que faltan para que la casilla elegida (con un punto al azar dentro de ella) quede bajo la flecha,
+// sumando vueltas completas hasta que el frenado dure unos 4 a 6 segundos.
+function distanciaA(i,n){
+  const a=360/n,centro=(i+.5)*a+(Math.random()-.5)*a*.6;
+  const obj=((360-centro)%360+360)%360,base=((ang%360)+360)%360;
+  let d=(obj-base+360)%360;
+  while(d<VMAX*2)d+=360;            // frenado de al menos 4 s
+  return d;
 }
+
 async function girar(){
   if(girando||!est)return;girando=true;$("girar").disabled=true;$("res").hidden=true;
-  // La rueda empieza a girar al instante, mientras el servidor responde
-  const R=$("rueda");R.style.transition="transform 12s linear";rot=anguloActual()+360*12;R.style.transform="rotate("+rot+"deg)";
-  const parar=()=>{const c=anguloActual();R.style.transition="none";rot=c;R.style.transform="rotate("+c+"deg)";void R.offsetWidth;R.style.transition=""};
+  let v=0,corre=true,ultimo=performance.now();
+  // Arranca al instante: acelera y sigue girando a velocidad constante
+  (function marcha(ahora){
+    if(!corre)return;
+    const dt=Math.min(.05,(ahora-ultimo)/1000);ultimo=ahora;
+    v=Math.min(VMAX,v+ACEL*dt);ang+=v*dt;pinta();
+    requestAnimationFrame(marcha);
+  })(ultimo);
   let r;
-  try{r=await jsonp("girar",codigo)}catch(x){
-    parar();girando=false;$("res").hidden=false;$("res").textContent="No pudimos confirmar tu giro. Recarga la página y revisa tus giros con tu código.";return}
-  if(!r.ok){parar();girando=false;$("res").hidden=false;$("res").textContent=r.error||"No se pudo girar.";pintar(Object.assign({},est,{giros_restantes:r.error&&/giros/.test(r.error)?0:est.giros_restantes}));return}
-  parar();
-  R.style.transform="rotate("+destino(r.casilla,est.casillas.length)+"deg)";
-  setTimeout(()=>{
-    girando=false;r.casillas=est.casillas;pintar(r);
-    const x=$("res");x.hidden=false;x.textContent=(ICONO[r.tipo]||"")+" "+r.etiqueta;
-  },4800);
+  try{r=await jsonp("girar",codigo)}catch(x){r=null}
+  while(v<VMAX)await espera(30);    // si el servidor fue muy rápido, termina primero de arrancar
+  corre=false;
+  if(!r||!r.ok){
+    await frenar(VMAX*1.5);          // se detiene suavemente y avisa del error
+    girando=false;$("res").hidden=false;
+    if(!r){$("res").textContent="No pudimos confirmar tu giro. Recarga la página y revisa tus giros con tu código.";return}
+    $("res").textContent=r.error||"No se pudo girar.";
+    pintar(Object.assign({},est,{giros_restantes:r.error&&/giros/.test(r.error)?0:est.giros_restantes}));return}
+  await frenar(distanciaA(r.casilla,est.casillas.length));
+  girando=false;r.casillas=est.casillas;pintar(r);
+  const x=$("res");x.hidden=false;x.textContent=(ICONO[r.tipo]||"")+" "+r.etiqueta;
 }
 
 $("entrar").onclick=entrar;$("girar").onclick=girar;

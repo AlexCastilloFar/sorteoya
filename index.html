@@ -37,6 +37,11 @@ nav{display:flex;gap:4px;background:#ffffff14;padding:4px;border-radius:99px}
 nav a{color:#fff;padding:8px 14px;border-radius:99px;font-size:.9rem;font-weight:600;white-space:nowrap}
 nav a:hover,nav a.on{background:var(--gold);color:var(--navy)}
 .wsp{background:var(--gold)!important;color:var(--navy)!important}
+html{overflow-x:clip}
+.bar>*{min-width:0}
+nav{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+nav a{flex:0 0 auto}
 @media(max-width:640px){.brand span{display:none}nav a{padding:7px 10px;font-size:.8rem}}
 /* Hero */
 .hero{background:radial-gradient(circle at 70% 0,var(--navy2),var(--navy) 70%);color:#fff;text-align:center;padding:36px 16px 56px}
@@ -188,7 +193,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
 <div class="hero">
   <h1>Participa y <b>gana ya</b></h1>
   <p>Sorteos en vivo por nuestra página de Facebook · Mira tus números en tiempo real</p>
-  <div class="hbtns"><a class="rbtn" href="ruleta.html">🎡 Ruleta de la suerte</a><a class="rbtn alt" href="lista.html">📋 Lista oficial de participantes</a></div>
+  <div class="hbtns" id="hbtns"><a class="rbtn" href="ruleta.html">🎡 Ruleta de la suerte</a></div>
 </div>
 
 <main class="wrap">
@@ -247,8 +252,8 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
       <div class="step s1"><b>01</b><h4>Elige tus números</h4><p>Toca los libres en la cuadrícula (puedes elegir varios).</p></div>
       <div class="step s2"><b>02</b><h4>Escríbenos</h4><p>Presiona "Compra tus boletos" y se abre WhatsApp.</p></div>
       <div class="step s3"><b>03</b><h4>Paga</h4><p>Por Yape o Plin.</p></div>
-      <div class="step s4"><b>04</b><h4>Envía tu comprobante</h4><p>Con tu nombre y apellidos. Y aparecerás en "Mis tickets".</p></div>
-      <div class="step s5"><b>05</b><h4>¡A esperar!</h4><p>Mucha suerte el día del sorteo.</p></div>
+      <div class="step s4"><b>04</b><h4>Envía tu comprobante</h4><p>Tus datos ya van en el mensaje. Solo adjunta tu pago y espera nuestra confirmación.</p></div>
+      <div class="step s5"><b>05</b><h4>¡A esperar!</h4><p>Cuando confirmemos, búscate en "Mis tickets". ¡Mucha suerte!</p></div>
     </div>
   </section>
 
@@ -305,7 +310,15 @@ async function cargar(){
     const r=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"t="+Date.now());
     filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[]}));
   }catch(e){}
-  pintarCards();pintarGrid();buscar();
+  pintarHero();pintarCards();pintarGrid();buscar();
+}
+
+// Arriba solo va la ruleta. Cuando se agotan todos los números, la ruleta se quita y aparece la lista oficial.
+function pintarHero(){
+  const s=SORTEOS[0],libres=(s.hasta-s.desde+1)-ocupados(s).size;
+  $("hbtns").innerHTML=libres>0
+    ?'<a class="rbtn" href="ruleta.html">🎡 Ruleta de la suerte</a>'
+    :'<a class="rbtn" href="lista.html">📋 Lista oficial de participantes</a>';
 }
 
 function pintarCards(){

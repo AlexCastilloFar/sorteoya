@@ -105,14 +105,14 @@ document.getElementById("doc").innerHTML=`
 <h2>6. Mecánica del sorteo</h2>
 <p><b class="k">Boletos:</b> cada boleto tiene un número asignado. En total son ${total} boletos, del ${s.desde} al ${s.hasta}.</p>
 <p><b class="k">Extracción:</b> los números se sacan de una ánfora y se muestra en vivo el número ganador.</p>
-<p><b class="k">Orden de los premios:</b> la extracción se realiza según lo que el público pida durante la transmisión, dejando para el final los premios mayores: la refrigeradora, la cocina, el TV y el premio de S/ 500.</p>
+<p><b class="k">Orden de los premios:</b> la extracción se realiza en orden descendente: se empieza por el ${todos.length-1}° premio y se avanza hasta el 1° premio, dejando para el final los premios mayores. El premio consuelo (${todos.length}° premio) se define al terminar todos los demás sorteos, para verificar quién compró más boletos y no ganó ningún premio.</p>
 <p><b class="k">Número ganador:</b> el número ganador sale de la ánfora y ya no vuelve a ingresar. Los números que salgan "al agua" (que no ganan) sí vuelven a la ánfora. Por ejemplo: si el primer número sale "al agua", el segundo sale "al agua" y el tercero es el ganador, el tercero sale definitivamente de la ánfora y los otros dos regresan a ella.</p>
 <p>Un mismo número no puede ganar más de un premio. Una misma persona sí puede ganar más de un premio si tiene varios números.</p>
 
 <h2>7. Reglas especiales: premio consuelo (mayor comprador)</h2>
 <p><b class="k">Definición:</b> se otorgará un premio consuelo de S/ 200.00 en efectivo a la persona que haya acumulado la mayor cantidad de tickets comprados y que no haya resultado ganadora de ningún otro premio principal (ni en efectivo ni electrodoméstico). Los boletos adicionales ganados en la ruleta no cuentan para este premio.</p>
 <p><b class="k">Criterio de exclusión:</b> si el participante con más tickets ya ganó algún premio en el sorteo, la opción pasará automáticamente al siguiente participante con mayor cantidad de tickets válidos que siga sin ganar nada.</p>
-<p><b class="k">En caso de empate:</b> si se registra un empate entre dos o más participantes que cumplan con la mayor cantidad de tickets y cero premios, se realizará un mini sorteo en vivo entre ellos para definir de forma aleatoria al único ganador de los S/ 200.00.</p>
+<p><b class="k">En caso de empate:</b> si se registra un empate entre dos o más participantes que cumplan con la mayor cantidad de tickets y cero premios, ellos mismos elegirán cómo resolverlo: repartirse el premio de S/ 200.00 en partes iguales, o realizar un mini sorteo en vivo entre ellos para definir de forma aleatoria al único ganador. Si no se ponen de acuerdo, el organizador decidirá cuál de las dos opciones se aplica.</p>
 <p><b class="k">Condición:</b> este premio solo está activo si se venden el 100% de los boletos dentro del plazo máximo indicado en el punto 5.</p>
 
 <h2>8. Validación e identificación de ganadores</h2>

@@ -44,6 +44,14 @@ main{max-width:1000px;margin:-26px auto 40px;padding:0 16px}
 .fila .nm{font-weight:800;overflow-wrap:anywhere}
 .tk{background:var(--navy);color:var(--gold);border-radius:8px;padding:3px 10px;min-width:44px;text-align:center;font-size:.85rem;font-weight:800}
 .tk.sin{background:#e4e8f5;color:var(--mut)}
+.ver{display:block;margin-top:6px;background:var(--gold);color:var(--navy);border:0;border-radius:99px;padding:6px 12px;font:800 .8rem system-ui,sans-serif;cursor:pointer}
+.vm{position:fixed;inset:0;background:#010f39d9;z-index:50;display:none;align-items:center;justify-content:center;padding:16px}
+.vm.on{display:flex}
+.vm-box{position:relative;background:#fff;border-radius:18px;padding:14px 14px 10px;max-width:100%;text-align:center}
+.vm-x{position:absolute;top:-14px;right:-10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--gold);color:var(--navy);font-size:1.4rem;font-weight:800;cursor:pointer;line-height:1}
+.vm-fr{height:min(72vh,560px);aspect-ratio:9/16;max-width:100%;background:#000;border-radius:12px;overflow:hidden}
+.vm-fr iframe{width:100%;height:100%;border:0;display:block}
+.vm-t{font-weight:800;color:var(--navy2);margin-top:8px;font-size:.95rem}
 .vacio{text-align:center;color:var(--mut);font-weight:600;padding:10px 0}
 .nota{margin-top:12px;font-size:.8rem;color:var(--mut);text-align:center}
 @media(max-width:520px){.fila{grid-template-columns:1fr auto;gap:4px 10px}.fila.th{display:none}.fila .pr{grid-column:1/-1;font-size:.8rem}}
@@ -58,6 +66,7 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}footer a{color:var(--
   <input class="buscar" id="q" type="search" placeholder="Buscar por nombre (ej: Alex Castillo)" autocomplete="off">
   <div id="listas"></div>
 </main>
+<div class="vm" id="vm" role="dialog" aria-modal="true" aria-label="Video del ganador"><div class="vm-box"><button class="vm-x" id="vmX" aria-label="Cerrar">×</button><div class="vm-fr" id="vmFr"></div><div class="vm-t" id="vmT"></div></div></div>
 <footer><img src="logo.png" alt="SorteoYa"><br><div style="margin:6px 0 10px"><a href="terminos.html">Términos y condiciones</a> · <a href="ruleta.html">Ruleta de la suerte</a> · <a href="index.html">Inicio</a></div>© 2026 SorteoYa · Sorteo válido para mayores de 18 años. Juega con responsabilidad.</footer>
 <script>document.write('<script src="config.js?v='+Date.now()+'"><\/script>')</script>
 <script>
@@ -66,6 +75,15 @@ const norm=s=>(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCas
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pad=n=>String(n).padStart(2,"0");
 
+function ytId(u){const m=String(u||"").match(/(?:shorts\/|youtu\.be\/|[?&]v=|embed\/)([\w-]{11})/);return m?m[1]:""}
+function abrirVideo(id,nom){
+  $("vmFr").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&playsinline=1" title="Video de ${nom.replace(/"/g,"")}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>`;
+  $("vmT").textContent="🏆 "+nom;$("vm").classList.add("on");}
+function cerrarVideo(){$("vm").classList.remove("on");$("vmFr").innerHTML=""}
+$("listas").addEventListener("click",e=>{const b=e.target.closest(".ver");if(b)abrirVideo(b.dataset.v,b.dataset.n)});
+$("vmX").addEventListener("click",cerrarVideo);
+$("vm").addEventListener("click",e=>{if(e.target.id==="vm")cerrarVideo()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrarVideo()});
 function pintar(){
   const q=norm($("q").value),cont=$("listas");let hay=0;
   const lista=(typeof LISTA_GANADORES!=="undefined"&&LISTA_GANADORES)||[];
@@ -74,8 +92,10 @@ function pintar(){
     if(!gs.length)return "";hay+=gs.length;
     const filas=gs.map(g=>{
       const b=String(g.boleto||"").trim();
-      const tk=b?`<span class="tk">N° ${esc(/^\d+$/.test(b)?pad(b):b)}</span>`:`<span class="tk sin">—</span>`;
-      return `<div class="fila"><span class="pr">${esc(g.premio)}</span><span class="nm">${esc(g.nombre)}</span>${tk}</div>`}).join("");
+      const tk=b?`<span class="tk">${/^\d+$/.test(b)?"N° "+pad(b):esc(b)}</span>`:`<span class="tk sin">—</span>`;
+      const id=ytId(g.video);
+      const bv=id?`<button class="ver" type="button" data-v="${esc(id)}" data-n="${esc(g.nombre)}">▶ Ver el momento</button>`:"";
+      return `<div class="fila"><span class="pr">${esc(g.premio)}</span><span class="nm">${esc(g.nombre)}${bv}</span>${tk}</div>`}).join("");
     return `<div class="card"><div class="dh"><div>🏆 ${esc(d.dinamica)}</div><span>${esc(d.fecha||"")}</span></div>
       <div class="fila th"><span>Premio</span><span>Ganador</span><span>Boleto</span></div>${filas}</div>`}).join("");
   cont.innerHTML=html||`<div class="card"><p class="vacio">${q?"No encontramos ese nombre entre los ganadores.":"Pronto publicaremos a nuestros ganadores 🏆"}</p></div>`;

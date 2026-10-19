@@ -44,15 +44,20 @@ const GANADORES = [
 
 // Lista completa de ganadores (página "Ver todos los ganadores").
 // Cada dinámica es un bloque; cada ganador: premio, nombre y boleto (boleto:"" si aún no lo tienes).
+// video = enlace de YouTube (opcional, normal o short); si lo dejas vacío no sale el botón "Ver el momento".
 // Escribe el nombre como quieras que se vea (ej: "Alex Castillo"). Para agregar una dinámica nueva, copia un bloque.
 const LISTA_GANADORES = [
   { dinamica:"Dinámica de S/ 1,100", fecha:"", ganadores:[
       {premio:"Premio 1 · S/ 500",  nombre:"Mireya Zeña",     boleto:"228"},
-      {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:"245"},
-      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"260"},
-      {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:"248"},
-      {premio:"Premio a la fidelidad · S/ 20", nombre:"Mercedes Farfan", boleto:"En vivo"},
-      {premio:"Premio a la fidelidad · S/ 20", nombre:"Gabriela Chavez", boleto:"En vivo"},
-      {premio:"Premio a la fidelidad · S/ 20", nombre:"Yasmin Silva",    boleto:"En vivo"}
+      {premio:"Premio 2 · S/ 200",  nombre:"Matthew Guzman",  boleto:"245", video:"https://youtube.com/shorts/Mt8PZ-diTxM"},
+      {premio:"Premio 3 · S/ 200",  nombre:"George Camacho",  boleto:"260", video:"https://youtube.com/shorts/7RWRBFht2Ao"},
+      {premio:"Premio 4 · S/ 200",  nombre:"Edwar Bello",     boleto:"248", video:"https://youtube.com/shorts/-hYiidivHmw"},
+      {premio:"Premio a la fidelidad · S/ 20", nombre:"Mercedes Farfan", boleto:"En vivo", video:"https://youtube.com/shorts/8BErlYR9RjI"},
+      {premio:"Premio a la fidelidad · S/ 20", nombre:"Gabriela Chavez", boleto:"En vivo", video:"https://youtube.com/shorts/hdsw0j418m4"},
+      {premio:"Premio a la fidelidad · S/ 20", nombre:"Yasmin Silva",    boleto:"En vivo", video:"https://youtube.com/shorts/jlfWqNHI2AI"}
   ]}
 ];
+
+// Live de Facebook dentro de la página (solo el día del sorteo).
+// Pega aquí el enlace del video/live PÚBLICO de tu página de Facebook. Déjalo vacío ("") y no se muestra nada.
+const LIVE_FACEBOOK = "";

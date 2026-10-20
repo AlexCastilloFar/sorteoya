@@ -75,6 +75,7 @@ h2 b{color:var(--navy2);background:linear-gradient(90deg,var(--gold2),var(--gold
 .pt{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mut);margin-bottom:12px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:0;border-radius:14px;font-weight:800;font-size:1rem;cursor:pointer;background:linear-gradient(90deg,var(--gold),var(--gold2));color:var(--navy)}
 .btn.alt{background:var(--navy);color:#fff;margin-top:8px}
+.btn.tg{background:#229ed9;color:#fff;margin-top:8px}
 /* Números */
 .panel{background:#fff;border-radius:22px;padding:18px;box-shadow:0 8px 30px #0b1f6614}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
@@ -298,7 +299,9 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
     <input id="ddni" inputmode="numeric" placeholder="Ej: 12345678" autocomplete="off" maxlength="12">
     <div class="derr" id="derr"></div>
     <button class="btn" type="submit">Continuar a WhatsApp 💬</button>
+    <button class="btn tg" type="button" id="btnTg" style="display:none" onclick="enviarDatos(event,'tg')">Continuar por Telegram ✈️</button>
     <button class="btn alt" type="button" onclick="cerrarDatos()">Cancelar</button>
+    <small id="tgNota" style="display:none">Por Telegram solo envías la foto de tu comprobante. Tus números se ven en la página como «en revisión» hasta confirmar el pago; si no se verifica, la compra se anula.</small>
     <small>Al continuar aceptas los <a href="terminos.html" target="_blank" rel="noopener">términos y condiciones</a>.</small>
   </form>
 </div>
@@ -461,13 +464,23 @@ function vendedoraActual(){
 const VENDEDORA=vendedoraActual();
 // Deja la compra en la pestaña "Pendientes" de la hoja (sin ocupar números): así no hay que volver a escribirla.
 // Va por POST (los datos no quedan en la dirección web) y en silencio: si falla, no se nota ni afecta la compra.
-function registrarPendiente(quien,nums,total,s){
+function registrarPendiente(quien,nums,total,s,extra){
   if(!quien||!quien.dni||!nums.length)return;
   try{
-    fetch(API_RULETA,{method:"POST",mode:"no-cors",keepalive:true,body:JSON.stringify({
+    fetch(API_RULETA,{method:"POST",mode:"no-cors",keepalive:true,body:JSON.stringify(Object.assign({
       accion:"pendiente",nombre:quien.nombre||"",dni:quien.dni,nums:nums,total:total,v:VENDEDORA||"",
-      tipo:PROMO?(PROMO.tipo||""):"",cod:PROMO?(PROMO.cod||""):"",pid:PROMO?(PROMO.id||""):"",dina:s.titulo})}).catch(()=>{});
+      tipo:PROMO?(PROMO.tipo||""):"",cod:PROMO?(PROMO.cod||""):"",pid:PROMO?(PROMO.id||""):"",dina:s.titulo},extra||{}))}).catch(()=>{});
   }catch(e){}
+}
+// Compra por Telegram: se guarda la compra con un código al azar y se abre el bot con ese código (así el cliente no escribe nada)
+function irTelegram(quien){
+  const s=SORTEOS[actual],nums=[...sel].sort((a,b)=>a-b);
+  if(!nums.length||!quien||typeof TELEGRAM_BOT==="undefined"||!TELEGRAM_BOT)return;
+  const a=new Uint8Array(8);(window.crypto||{getRandomValues:x=>x.forEach((_,i)=>x[i]=Math.random()*256)}).getRandomValues(a);
+  const id=[...a].map(x=>"abcdefghjkmnpqrstuvwxyz23456789"[x%31]).join("");
+  avisarVendedora(nums);
+  registrarPendiente(quien,nums,precio(s,nums.length),s,{canal:"telegram",id:id});
+  window.open("https://t.me/"+TELEGRAM_BOT+"?start="+id,"_blank");
 }
 
 function avisarVendedora(nums){
@@ -543,17 +556,20 @@ function comprar(){
   if(PROMO){irWhatsApp(datosPromo());return}     // viene de la ruleta: directo a WhatsApp, sin ventana
   // Compra normal: la ventana SIEMPRE se abre vacía (puede estar comprando para otra persona)
   $("dnom").value="";$("ddni").value="";$("derr").textContent="";
+  const hayTg=typeof TELEGRAM_BOT!=="undefined"&&!!TELEGRAM_BOT;
+  $("btnTg").style.display=hayTg?"":"none";$("tgNota").style.display=hayTg?"":"none";
   $("dmodal").classList.add("on");
   setTimeout(()=>$("dnom").focus(),50);
 }
 function cerrarDatos(){$("dmodal").classList.remove("on")}
-function enviarDatos(e){
+function enviarDatos(e,canal){
   if(e)e.preventDefault();
   const nombre=$("dnom").value.trim().replace(/\s+/g," "),dni=$("ddni").value.replace(/\D/g,"");
   if(!RE_NOMBRE.test(nombre)){$("derr").textContent="Escribe tu nombre y apellido (ej: Alex Castillo).";return false}
   if(dni.length<7||dni.length>12){$("derr").textContent="El DNI debe tener 8 números.";return false}
   const d={nombre:bonito(nombre),dni:dni};
-  cerrarDatos();irWhatsApp(d);
+  cerrarDatos();
+  if(canal==="tg")irTelegram(d);else irWhatsApp(d);
   return false;
 }
 

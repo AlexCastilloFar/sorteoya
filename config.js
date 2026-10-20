@@ -8,6 +8,7 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTwWu0HjWZL_Y6
 const WHATSAPP = "51965253469";                                                  // tu número con código de país, sin +
 const FACEBOOK_URL = "https://www.facebook.com/1SorteoYa";                        // enlace de tu página de Facebook
 const CANAL_WSP_URL = "https://whatsapp.com/channel/0029VbDEnNL0G0Xlb7Ehzt27";    // enlace de tu canal de WhatsApp
+const TELEGRAM_BOT = "";                                                        // usuario del bot de Telegram, sin @ (ej: "SorteoYaBot"). Vacío = el botón de Telegram no aparece
 
 // Pagos: sube las imágenes de tus QR junto a index.html con estos nombres
 const PAGO = {

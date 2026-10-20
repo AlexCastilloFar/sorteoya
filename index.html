@@ -448,6 +448,8 @@ function toggle(n){sel.has(n)?sel.delete(n):sel.add(n);pintarGrid()}
 // ===== Vendedoras: ?v=codigo (el cliente no ve nada; solo se avisa en silencio al servidor al comprar) =====
 function vendedoraActual(){
   try{
+    // Enlace de dueño (?dueno=sy-alex): borra la vendedora guardada en este navegador para que tus compras no se le atribuyan a nadie
+    if((new URLSearchParams(location.search).get("dueno")||"")==="sy-alex")localStorage.removeItem("sy_v");
     const v=(new URLSearchParams(location.search).get("v")||"").trim().toLowerCase();
     if(/^[a-z0-9_-]{2,20}$/.test(v))localStorage.setItem("sy_v",JSON.stringify({v:v,t:Date.now()}));
     const g=JSON.parse(localStorage.getItem("sy_v")||"null");

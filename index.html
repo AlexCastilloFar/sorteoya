@@ -457,6 +457,17 @@ function vendedoraActual(){
   return /^[a-z0-9_-]{2,20}$/.test(m)?m:"";
 }
 const VENDEDORA=vendedoraActual();
+// Deja la compra en la pestaña "Pendientes" de la hoja (sin ocupar números): así no hay que volver a escribirla.
+// Va por POST (los datos no quedan en la dirección web) y en silencio: si falla, no se nota ni afecta la compra.
+function registrarPendiente(quien,nums,total,s){
+  if(!quien||!quien.dni||!nums.length)return;
+  try{
+    fetch(API_RULETA,{method:"POST",mode:"no-cors",keepalive:true,body:JSON.stringify({
+      accion:"pendiente",nombre:quien.nombre||"",dni:quien.dni,nums:nums,total:total,v:VENDEDORA||"",
+      tipo:PROMO?(PROMO.tipo||""):"",cod:PROMO?(PROMO.cod||""):"",pid:PROMO?(PROMO.id||""):"",dina:s.titulo})}).catch(()=>{});
+  }catch(e){}
+}
+
 function avisarVendedora(nums){
   if(!VENDEDORA||!nums.length)return;
   try{const cb="iv"+Date.now(),sc=document.createElement("script");
@@ -522,6 +533,7 @@ function irWhatsApp(quien){
     msg=`Hola${yo}. Quiero comprar ${lista} usando mi descuento de S/ ${DESC} de la ruleta (premio ${PROMO.id}, código ${PROMO.cod}). Total con descuento: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
   else msg=`Hola${yo}. Quiero comprar ${lista}. Total: S/ ${precio(s,l.length)}. ¿Siguen disponibles?`;
   avisarVendedora([...sel].sort((x,y)=>x-y));
+  registrarPendiente(quien,[...sel].sort((x,y)=>x-y),precio(s,l.length),s);
   window.open(wa(msg),"_blank");
 }
 function comprar(){

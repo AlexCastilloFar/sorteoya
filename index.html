@@ -75,6 +75,7 @@ h2 b{color:var(--navy2);background:linear-gradient(90deg,var(--gold2),var(--gold
 .pt{display:flex;justify-content:space-between;font-size:.8rem;color:var(--mut);margin-bottom:12px}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:0;border-radius:14px;font-weight:800;font-size:1rem;cursor:pointer;background:linear-gradient(90deg,var(--gold),var(--gold2));color:var(--navy)}
 .btn.alt{background:var(--navy);color:#fff;margin-top:8px}
+.btn.wa{background:#1da851;color:#fff}
 .btn.tg{background:#229ed9;color:#fff;margin-top:8px}
 /* Números */
 .panel{background:#fff;border-radius:22px;padding:18px;box-shadow:0 8px 30px #0b1f6614}
@@ -298,7 +299,7 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
     <label for="ddni">DNI</label>
     <input id="ddni" inputmode="numeric" placeholder="Ej: 12345678" autocomplete="off" maxlength="12">
     <div class="derr" id="derr"></div>
-    <button class="btn" type="submit">Continuar a WhatsApp 💬</button>
+    <button class="btn wa" type="submit">Continuar a WhatsApp 💬</button>
     <button class="btn tg" type="button" id="btnTg" style="display:none" onclick="enviarDatos(event,'tg')">Continuar por Telegram ✈️</button>
     <button class="btn alt" type="button" onclick="cerrarDatos()">Cancelar</button>
     <small id="tgNota" style="display:none">Por Telegram solo envías la foto de tu comprobante. Tus números se ven en la página como «en revisión» hasta confirmar el pago; si no se verifica, la compra se anula.</small>

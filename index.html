@@ -123,10 +123,33 @@ input:focus{outline:0;border-color:var(--gold2)}
 footer{background:var(--navy);color:#ffffffb0;text-align:center;padding:26px 16px;font-size:.85rem}
 footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .fab{position:fixed;right:16px;bottom:16px;z-index:30;background:#25d366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 4px 16px #0006}
-.redes{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
-.redes a{display:inline-flex;align-items:center;gap:8px;border-radius:99px;padding:10px 18px;color:#fff;font-weight:800;font-size:.92rem}
-.redes svg{width:1.2em;height:1.2em}
-.tt{background:#111}.ig{background:linear-gradient(135deg,#f58529,#dd2a7b 55%,#8134af)}
+.rec{display:inline-block;width:.7em;height:.7em;border-radius:50%;background:var(--bad);margin-right:.6em;vertical-align:-.05em;animation:rec 1.4s infinite}
+@keyframes rec{50%{opacity:.25}}
+.tsub{text-align:center;color:var(--mut);font-size:.9rem;margin:-6px auto 18px;max-width:560px}.tsub b{color:var(--txt)}
+.tx{display:grid;gap:12px;max-width:760px;margin:0 auto}
+.tx a{position:relative;display:flex;align-items:center;gap:14px;border-radius:22px;padding:16px;color:#fff;box-shadow:0 10px 26px #010f3926;transition:transform .15s}
+.tx a:hover{transform:translateY(-2px)}
+.tx-ic{flex:0 0 auto;width:52px;height:52px;border-radius:16px;background:#ffffff26;display:flex;align-items:center;justify-content:center}
+.tx-ic svg{width:28px;height:28px}
+.tx-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.tx-t small{font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;opacity:.8}
+.tx-t b{font-size:1.2rem;line-height:1.15;font-weight:800}
+.tx-t em{font-style:normal;font-size:.8rem;opacity:.9;font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.tx-t em:empty{display:none}
+.go{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:#ffffff2e;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem}
+.tx-fb{background:linear-gradient(135deg,#2d86ff,#0b4fb5);padding:30px 16px 18px!important}
+.tx-fb .tx-t b{font-size:1.9rem}
+.tx-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);white-space:nowrap;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:7px 16px;border-radius:99px;box-shadow:0 6px 16px #fdba0a66}
+.tx-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tx-row a{flex-direction:column;align-items:flex-start;gap:10px;padding:14px}
+.tx-row .tx-t{width:100%}
+.tx-row .go{display:none}
+.tx-row .tx-t b{font-size:1.1rem}
+.tx-row a:only-of-type,.tx-row.uno{grid-column:1/-1}
+.tx-tt{background:#0b0b14;box-shadow:inset 0 0 0 2px #25f4ee66,0 10px 26px #010f3926,-3px 0 0 #fe2c5566}
+.tx-ig{background:linear-gradient(135deg,#f58529,#dd2a7b 55%,#8134af)}
+.tx-wc{background:linear-gradient(135deg,#25d366,#128c7e)}
+@media(min-width:520px){.tx-row a{flex-direction:row;align-items:center}.tx-row .go{display:flex}.tx-row .tx-t{width:auto}}
 .fabm{position:fixed;right:16px;bottom:80px;z-index:31;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
 .fabm[hidden]{display:none}
 .fabm a{display:flex;align-items:center;gap:8px;color:#fff;font-weight:800;font-size:.92rem;padding:11px 16px;border-radius:99px;box-shadow:0 4px 16px #0005}
@@ -142,10 +165,6 @@ footer img{width:60px;border-radius:12px;margin-bottom:6px}
 .vivo .vf{position:relative;aspect-ratio:16/9;background:#000;border-radius:18px;overflow:hidden;box-shadow:0 8px 30px #0b1f6633}
 .vivo iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vivo a{display:inline-block;margin-top:10px;font-weight:800;color:var(--navy2);text-decoration:underline}
-.live{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.live a{display:block;border-radius:18px;padding:18px;color:#fff;font-weight:800}
-.live .ic{width:1.15em;height:1.15em;vertical-align:-.2em;margin-right:8px}
-.live small{display:block;font-weight:600;opacity:.9;margin-top:2px}
 .fb{background:linear-gradient(135deg,#1877f2,#0b4fb5)}.wc{background:linear-gradient(135deg,#25d366,#128c7e)}
 .aviso{border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:.88rem;text-align:center;background:#fdba0a1f;color:#7a4e00;font-weight:600}
 .aviso.full{background:var(--navy);color:#fff}.aviso.full b{color:var(--gold)}
@@ -232,15 +251,30 @@ footer a{color:var(--gold);font-weight:700;text-decoration:underline}
   </section>
 
   <section id="envivo" style="padding-bottom:0">
-    <div class="eyebrow">Transparencia total</div><h2>Sorteos en <b>vivo</b></h2>
+    <div class="eyebrow"><span class="rec" aria-hidden="true"></span>Transparencia total</div>
+    <h2>Nuestras transmisiones <b style="white-space:nowrap">EN VIVO</b></h2>
+    <p class="tsub">El sorteo se realiza <b>únicamente por Facebook</b>. Síguenos también en TikTok e Instagram.</p>
     <div class="vivo" id="vivo" hidden></div>
-    <div class="live">
-      <a class="fb" id="lnkFb" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg>Facebook de SorteoYa<small>Todos nuestros sorteos se realizan únicamente por nuestra página de Facebook</small></a>
-      <a class="wc" id="lnkCanal" target="_blank" rel="noopener"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.78h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88zm8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.49-8.41z"/></svg>Canal de WhatsApp<small>Avisos de sorteos, resultados y novedades directo a tu celular</small></a>
-    </div>
-    <div class="redes" id="redes" hidden>
-      <a class="tt" id="lnkTt" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2h-3.4v13.4a2.9 2.9 0 1 1-2-2.8V9.6a6.3 6.3 0 1 0 5.4 6.2V9.1a8.2 8.2 0 0 0 4.8 1.5V7.2a4.8 4.8 0 0 1-1-.5z"/></svg>Síguenos en TikTok</a>
-      <a class="ig" id="lnkIg" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 7.4A4.6 4.6 0 1 0 12 16.6 4.6 4.6 0 0 0 12 7.4zm0 7.600a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm5.900-7.800a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM22 8.100c-.1-1.600-.4-3-1.600-4.200S17.600 2.100 16 2C14.300 1.900 9.700 1.900 8 2c-1.600.1-3 .4-4.200 1.600S2.100 6.400 2 8c-.1 1.700-.1 6.300 0 8 .1 1.600.4 3 1.600 4.200S6.400 21.900 8 22c1.700.1 6.300.1 8 0 1.600-.1 3-.4 4.200-1.600S21.900 17.600 22 16c.1-1.700.1-6.300 0-7.900zM20 17.4a3.300 3.300 0 0 1-1.900 1.900c-1.300.5-4.300.4-6.100.4s-4.8.1-6.100-.4A3.300 3.300 0 0 1 4 17.4c-.5-1.300-.4-4.300-.4-6.100s-.1-4.8.4-6.100A3.300 3.300 0 0 1 5.900 3.300c1.300-.5 4.300-.4 6.100-.4s4.8-.1 6.100.4A3.300 3.300 0 0 1 20 5.200c.5 1.300.4 4.300.4 6.100s.1 4.8-.4 6.100z"/></svg>Síguenos en Instagram</a>
+    <div class="tx">
+      <a class="tx-fb" id="lnkFb" target="_blank" rel="noopener">
+        <span class="tx-badge">🏆 Aquí se realiza el sorteo</span>
+        <span class="tx-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.69.24 2.69.24v2.97h-1.52c-1.49 0-1.96.93-1.96 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></span>
+        <span class="tx-t"><small>Transmisión oficial</small><b>Facebook</b><em id="fbHandle">SorteoYa</em></span><span class="go" aria-hidden="true">→</span>
+      </a>
+      <div class="tx-row" id="txRedes" hidden>
+        <a class="tx-tt" id="lnkTt" target="_blank" rel="noopener" hidden>
+          <span class="tx-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M19.6 6.7a4.8 4.8 0 0 1-3.8-4.2h-3.4v13.4a2.9 2.9 0 1 1-2-2.8V9.6a6.3 6.3 0 1 0 5.4 6.2V9.1a8.2 8.2 0 0 0 4.8 1.5V7.2a4.8 4.8 0 0 1-1-.5z"/></svg></span>
+          <span class="tx-t"><small>Videos y ganadores</small><b>TikTok</b><em id="ttHandle"></em></span><span class="go" aria-hidden="true">→</span>
+        </a>
+        <a class="tx-ig" id="lnkIg" target="_blank" rel="noopener" hidden>
+          <span class="tx-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M12 7.4A4.6 4.6 0 1 0 12 16.6 4.6 4.6 0 0 0 12 7.4zm0 7.600a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm5.900-7.800a1.1 1.1 0 1 1-2.2 0 1.1 1.1 0 0 1 2.2 0zM22 8.100c-.1-1.600-.4-3-1.600-4.200S17.600 2.100 16 2C14.300 1.900 9.700 1.900 8 2c-1.600.1-3 .4-4.200 1.600S2.100 6.400 2 8c-.1 1.700-.1 6.300 0 8 .1 1.600.4 3 1.600 4.200S6.400 21.900 8 22c1.700.1 6.300.1 8 0 1.600-.1 3-.4 4.200-1.600S21.900 17.600 22 16c.1-1.700.1-6.300 0-7.900zM20 17.4a3.300 3.300 0 0 1-1.900 1.900c-1.300.5-4.300.4-6.100.4s-4.8.1-6.100-.4A3.300 3.300 0 0 1 4 17.4c-.5-1.300-.4-4.300-.4-6.100s-.1-4.8.4-6.100A3.300 3.300 0 0 1 5.900 3.300c1.300-.5 4.300-.4 6.100-.4s4.8-.1 6.100.4A3.300 3.300 0 0 1 20 5.200c.5 1.300.4 4.300.4 6.100s.1 4.8-.4 6.100z"/></svg></span>
+          <span class="tx-t"><small>Fotos y novedades</small><b>Instagram</b><em id="igHandle"></em></span><span class="go" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <a class="tx-wc" id="lnkCanal" target="_blank" rel="noopener">
+        <span class="tx-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.21 3.08.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.08 1.76-.72 2-1.41.25-.69.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35zM12.05 21.78h-.01a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.74.98 1-3.65-.24-.37a9.86 9.86 0 0 1-1.51-5.26c0-5.45 4.44-9.88 9.89-9.88 2.64 0 5.12 1.03 6.99 2.9a9.82 9.82 0 0 1 2.89 6.99c0 5.45-4.44 9.88-9.88 9.88zm8.41-18.3A11.82 11.82 0 0 0 12.05 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.3-1.65a11.88 11.88 0 0 0 5.69 1.45h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.49-8.41z"/></svg></span>
+        <span class="tx-t"><small>Canal de difusión</small><b>Únete al canal de WhatsApp</b><em>Avisos de sorteos, resultados y novedades directo a tu celular</em></span><span class="go" aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
@@ -638,9 +672,11 @@ $("lnkFb").href=FACEBOOK_URL;$("lnkCanal").href=CANAL_WSP_URL;$("soporte").href=
 (function(){
   const ok=u=>typeof u==="string"&&/^https:\/\//.test(u.trim());
   const tt=typeof TIKTOK_URL!=="undefined"&&ok(TIKTOK_URL),ig=typeof INSTAGRAM_URL!=="undefined"&&ok(INSTAGRAM_URL);
-  if(tt){$("lnkTt").href=TIKTOK_URL.trim();$("lnkTt").hidden=false}
-  if(ig){$("lnkIg").href=INSTAGRAM_URL.trim();$("lnkIg").hidden=false}
-  if(tt||ig)$("redes").hidden=false;
+  const hand=u=>{const m=u.match(/(?:tiktok\.com\/|instagram\.com\/)(@?[A-Za-z0-9._]+)/);return m?(m[1][0]==="@"?m[1]:"@"+m[1]):""};
+  if(tt){$("lnkTt").href=TIKTOK_URL.trim();$("lnkTt").hidden=false;$("ttHandle").textContent=hand(TIKTOK_URL)}
+  if(ig){$("lnkIg").href=INSTAGRAM_URL.trim();$("lnkIg").hidden=false;$("igHandle").textContent=hand(INSTAGRAM_URL)}
+  if(tt||ig)$("txRedes").hidden=false;
+  const fh=FACEBOOK_URL.match(/facebook\.com\/([A-Za-z0-9.\-_]+)/);if(fh)$("fbHandle").textContent="@"+fh[1];
   const f=$("flRedes");if(f){let h="";if(tt)h+=' · <a href="'+TIKTOK_URL.trim()+'" target="_blank" rel="noopener">TikTok</a>';if(ig)h+=' · <a href="'+INSTAGRAM_URL.trim()+'" target="_blank" rel="noopener">Instagram</a>';f.innerHTML=h}
   const hayTg=typeof TELEGRAM_BOT!=="undefined"&&!!TELEGRAM_BOT;
   if(!hayTg)return; // sin Telegram: el botón sigue yendo directo a WhatsApp

@@ -636,7 +636,7 @@ function pintarGanadores(){
 if(typeof LIVE_FACEBOOK==="string"&&/^https:\/\/(www\.|m\.|web\.)?(facebook\.com|fb\.watch)\//.test(LIVE_FACEBOOK.trim())){
   const u=LIVE_FACEBOOK.trim(),v=$("vivo");
   v.innerHTML=`<div class="vf"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(u)}&show_text=false&autoplay=false" title="Sorteo en vivo" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe></div><a href="${u.replace(/"/g,"")}" target="_blank" rel="noopener">Verlo en Facebook →</a>`;v.hidden=false}
-$("lnkFb").href=FACEBOOK_URL;$("lnkCanal").href=CANAL_WSP_URL;$("soporte").href=wa("Hola SorteoYa, necesito ayuda.");$("fab").href=wa("Hola SorteoYa 👋");
+$("lnkFb").href=FACEBOOK_URL;$("lnkCanal").href=CANAL_WSP_URL;$("soporte").href=wa("Hola SorteoYa, necesito ayuda.");$("fab").href=wa("Hola Alex 👋 Vengo de la página web de SorteoYa y tengo una consulta.");
 (function(){
   const ok=u=>typeof u==="string"&&/^https:\/\//.test(u.trim());
   const tt=typeof TIKTOK_URL!=="undefined"&&ok(TIKTOK_URL),ig=typeof INSTAGRAM_URL!=="undefined"&&ok(INSTAGRAM_URL);
@@ -647,7 +647,7 @@ $("lnkFb").href=FACEBOOK_URL;$("lnkCanal").href=CANAL_WSP_URL;$("soporte").href=
   const f=$("flRedes");if(f){let h="";if(tt)h+=' · <a href="'+TIKTOK_URL.trim()+'" target="_blank" rel="noopener">TikTok</a>';if(ig)h+=' · <a href="'+INSTAGRAM_URL.trim()+'" target="_blank" rel="noopener">Instagram</a>';f.innerHTML=h}
   const hayTg=typeof TELEGRAM_BOT!=="undefined"&&!!TELEGRAM_BOT;
   if(!hayTg)return; // sin Telegram: el botón sigue yendo directo a WhatsApp
-  $("fabWa").href=wa("Hola SorteoYa 👋");$("fabTg").href="https://t.me/"+TELEGRAM_BOT;
+  $("fabWa").href=wa("Hola Alex 👋 Vengo de la página web de SorteoYa y tengo una consulta.");$("fabTg").href="https://t.me/"+TELEGRAM_BOT;
   const m=$("fabm"),b=$("fab");
   b.removeAttribute("href");b.removeAttribute("target");b.setAttribute("role","button");b.tabIndex=0;b.setAttribute("aria-expanded","false");
   const alt=()=>{m.hidden=!m.hidden;b.setAttribute("aria-expanded",String(!m.hidden));b.textContent=m.hidden?"💬":"✕"};

@@ -99,6 +99,8 @@ input{width:100%;padding:14px;font-size:1rem;border:2px solid #d5dbef;border-rad
 input:focus{outline:0;border-color:var(--gold2)}
 .res>div{padding:12px 0;border-bottom:1px solid #e4e8f5}
 .badge{display:inline-block;background:var(--navy);color:var(--gold);font-weight:800;border-radius:8px;padding:3px 10px;margin:3px 3px 0 0}
+.badge.rev{background:#fff4e0;color:#b54708;box-shadow:inset 0 0 0 1.5px #f5a524}
+.revtag{display:inline-block;font-size:.78rem;font-weight:700;color:#b54708;background:#fff4e0;border-radius:99px;padding:2px 9px;margin-left:6px}
 .mut{color:var(--mut)}
 /* Pasos */
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
@@ -332,7 +334,7 @@ let leido=false;
 async function cargar(){
   try{
     const r=await fetch(CSV_URL+(CSV_URL.includes("?")?"&":"?")+"t="+Date.now());
-    filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[]}));
+    filas=parseCSV(await r.text()).slice(1).filter(f=>f[0]&&f[1]).map(f=>({dina:f[0].trim(),nombre:f[1].trim(),nums:(f[2]||"").match(/\d+/g)?.map(n=>parseInt(n,10))||[],rev:/revis/i.test(f[3]||"")}));
     leido=true;
   }catch(e){}
   pintarHero();pintarCards();pintarGrid();buscar();avisoInicial();
@@ -592,9 +594,11 @@ function buscar(){
   if(!hits.length){box.innerHTML='<div class="mut">No encontramos ese nombre. Revisa cómo lo escribiste o escríbenos por Soporte.</div>';return}
   hits.slice(0,5).forEach(f=>{
     const d=document.createElement("div"),b=document.createElement("b");b.textContent=f.nombre;
-    const sp=document.createElement("span");sp.className="mut";sp.textContent=" – "+f.dina;d.append(b,sp,document.createElement("br"));
+    const sp=document.createElement("span");sp.className="mut";sp.textContent=" – "+f.dina;d.append(b,sp);
+    if(f.rev){const rv=document.createElement("span");rv.className="revtag";rv.textContent="⏳ en revisión de pago";d.append(rv)}
+    d.append(document.createElement("br"));
     const s=SORTEOS.find(x=>norm(f.dina).includes(norm(x.clave)))||SORTEOS[0];
-    f.nums.forEach(n=>{const t=document.createElement("span");t.className="badge";t.style.cursor="pointer";t.title="Ver en la cuadrícula";t.textContent=pad(n,s);t.onclick=()=>{actual=SORTEOS.indexOf(s);irA(n)};d.appendChild(t)});box.appendChild(d)});
+    f.nums.forEach(n=>{const t=document.createElement("span");t.className="badge"+(f.rev?" rev":"");t.style.cursor="pointer";t.title=f.rev?"En revisión: se confirma apenas verifiquemos tu pago":"Ver en la cuadrícula";t.textContent=pad(n,s);t.onclick=()=>{actual=SORTEOS.indexOf(s);irA(n)};d.appendChild(t)});box.appendChild(d)});
 }
 
 function tick(){document.querySelectorAll(".cd").forEach(el=>{
